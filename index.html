@@ -353,7 +353,10 @@ tr.total .cell { font-family: var(--font-display); font-weight: 400; font-size: 
 .l-final th, .l-final td { padding: 5px 6px; text-align: right; border-left: 0; }
 .l-final th:first-child, .l-final td:first-child { text-align: left; }
 .l-final tr.win td { font-weight: 700; color: var(--up); }
+.l-final table { table-layout: auto; }
 .l-final td { white-space: nowrap; }
+.l-final td:first-child { white-space: normal; overflow-wrap: anywhere; }
+.l-final th, .l-final td { padding-inline: 4px; }
 .l-final .l-wheelwrap { display: none; }
 
 /* Life: setup dialog */
