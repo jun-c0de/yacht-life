@@ -866,6 +866,7 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
 </head>
 <body>
 
@@ -950,6 +951,7 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
     <h2>참가자</h2>
     <ul class="n-seats" id="n-seats"></ul>
     <p class="n-wait" id="n-wait">방장이 게임을 시작하기를 기다리고 있습니다.</p>
+    <p class="n-hostnote" id="n-hostnote">친구가 들어올 때까지 이 화면을 켜 두세요. 휴대폰에서 다른 앱으로 넘어가면 연결이 끊길 수 있으니, 코드를 보낸 뒤 바로 돌아와 주세요.</p>
     <div class="n-actions">
       <button class="btn" id="n-addcpu" type="button">컴퓨터 추가</button>
       <button class="btn" id="n-leave" type="button">나가기</button>
@@ -1109,7 +1111,7 @@ function netToken() {
 function cleanName(n) { return String(n ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 8) || '손님'; }
 function netStatus(text) { $('n-status').textContent = text || ''; }
 function newPeer(id) {
-  if (typeof Peer !== 'function') { netStatus('연결 도구를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침하세요.'); return null; }
+  if (typeof Peer !== 'function') return null;
   return id ? new Peer(id, window.PEER_OPTS || {}) : new Peer(window.PEER_OPTS || {});
 }
 function netEnter(role, game, code) {
@@ -1122,14 +1124,62 @@ let wakeLock = null;
 async function requestWake() { try { if (Net.active && navigator.wakeLock) wakeLock = await navigator.wakeLock.request('screen'); } catch {} }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') requestWake(); });
 
+/* --- relay: used whenever a direct browser-to-browser link cannot be made --- */
+const RELAY_URLS = window.RELAY_URLS || ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+const RELAY_ROOT = 'yacht-life-room-v1/';
+const Relay = { clients:[], conns:new Map() };
+function relayStop() { Relay.clients.forEach(c => { try { c.end(true); } catch {} }); Relay.clients = []; Relay.conns.clear(); }
+function relayConnect(onConnect, onMessage) {
+  if (typeof mqtt === 'undefined') return;
+  RELAY_URLS.forEach(url => {
+    try {
+      const c = mqtt.connect(url, { clientId:'yl' + Math.random().toString(36).slice(2, 14), clean:true, connectTimeout:7000, reconnectPeriod:3000, keepalive:20 });
+      c.on('connect', () => onConnect(c));
+      c.on('message', (topic, payload) => { try { onMessage(c, JSON.parse(payload.toString())); } catch {} });
+      c.on('error', () => {});
+      Relay.clients.push(c);
+    } catch {}
+  });
+}
+/* Looks like a PeerJS connection to the rest of the room code. */
+class RelayConn {
+  constructor(client, topic, from) { this.client = client; this.topic = topic; this.from = from; this.open = true; this.handlers = {}; this.pendingState = null; this.timer = null; }
+  on(name, fn) { (this.handlers[name] = this.handlers[name] || []).push(fn); return this; }
+  fire(name, arg) { (this.handlers[name] || []).forEach(fn => fn(arg)); }
+  publish(m, qos) { if (this.open) this.client.publish(this.topic, JSON.stringify(this.from ? { from:this.from, m } : { m }), { qos }); }
+  send(m) {
+    if (m && (m.t === 'life' || m.t === 'yacht')) {
+      /* Game state is absolute, so only the newest copy in a burst needs to travel. */
+      this.pendingState = m;
+      if (!this.timer) this.timer = setTimeout(() => { this.timer = null; const st = this.pendingState; this.pendingState = null; if (st) this.publish(st, 0); }, 90);
+    } else this.publish(m, 1);
+  }
+  close() { if (!this.open) return; this.open = false; if (this.from === null) Relay.conns.forEach((v, k) => { if (v === this) Relay.conns.delete(k); }); this.fire('close'); }
+}
+function relayHost(code) {
+  const inbox = `${RELAY_ROOT}${code}/h`;
+  relayConnect(c => c.subscribe(inbox, { qos:1 }), (client, env) => {
+    if (!env || typeof env.from !== 'string' || !/^[a-z0-9]{1,64}$/.test(env.from)) return;
+    let conn = Relay.conns.get(env.from);
+    if (!conn) {
+      conn = new RelayConn(client, `${RELAY_ROOT}${code}/g/${env.from}`, null);
+      Relay.conns.set(env.from, conn);
+      hostOnConn(conn);
+    }
+    if (conn.client === client) conn.fire('data', env.m);
+  });
+}
+
 /* --- host --- */
 function netCreate(game, name, attempt = 0) {
   const code = Array.from({ length: 4 }, () => CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]).join('');
   netStatus('방을 만드는 중입니다.');
+  relayStop();
   const peer = newPeer(ROOM_PREFIX + code);
-  if (!peer) return;
-  const fail = setTimeout(() => { if (!peer.open) { peer.destroy(); netStatus('연결 서버에 닿지 못했습니다. 잠시 후 다시 시도하세요.'); } }, 15000);
-  peer.on('open', () => {
+  let entered = false, abandoned = false;
+  const enter = () => {
+    if (entered || abandoned) return;
+    entered = true;
     clearTimeout(fail);
     Net.peer = peer; Net.name = cleanName(name);
     Net.seats = [{ name: Net.name, token: netToken(), online: true, cpu: false, conn: null }];
@@ -1137,15 +1187,25 @@ function netCreate(game, name, attempt = 0) {
     netEnter('host', game, code);
     netStatus('');
     route(); renderRoom();
-  });
-  peer.on('connection', hostOnConn);
-  peer.on('error', err => {
-    clearTimeout(fail);
-    if (err.type === 'unavailable-id' && attempt < 5) { peer.destroy(); netCreate(game, name, attempt + 1); return; }
-    if (err.type === 'peer-unavailable') return;
-    if (!Net.active) netStatus('방을 만들지 못했습니다. 잠시 후 다시 시도하세요.');
-  });
-  peer.on('disconnected', () => setTimeout(() => { if (!Net.leaving && !peer.destroyed && peer.disconnected) { try { peer.reconnect(); } catch {} } }, 3000));
+  };
+  const fail = setTimeout(() => {
+    if (entered) return;
+    abandoned = true;
+    try { peer?.destroy(); } catch {}
+    relayStop();
+    netStatus('연결 서버에 닿지 못했습니다. 인터넷 연결을 확인하고 잠시 후 다시 시도하세요.');
+  }, 15000);
+  relayHost(code);
+  /* Either route is enough to open the room; the relay alone works when direct links are blocked. */
+  Relay.clients.forEach(c => c.once('connect', () => setTimeout(enter, peer ? 2500 : 0)));
+  if (peer) {
+    peer.on('open', enter);
+    peer.on('connection', hostOnConn);
+    peer.on('error', err => {
+      if (err.type === 'unavailable-id' && attempt < 5 && !entered) { abandoned = true; clearTimeout(fail); peer.destroy(); netCreate(game, name, attempt + 1); }
+    });
+    peer.on('disconnected', () => setTimeout(() => { if (!Net.leaving && !peer.destroyed && peer.disconnected) { try { peer.reconnect(); } catch {} } }, 3000));
+  }
 }
 function hostOnConn(conn) {
   conn.on('data', m => hostHandle(conn, m));
@@ -1252,36 +1312,76 @@ function netJoin(codeRaw, name) {
   const code = String(codeRaw).toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (code.length !== 4) { netStatus('방 코드는 4글자입니다.'); return; }
   Net.name = cleanName(name);
+  Net.code = code;
+  Net.leaving = false;
   netStatus('방에 연결하는 중입니다.');
-  const peer = newPeer();
-  if (!peer) return;
-  Net.peer = peer; Net.code = code;
-  const timer = setTimeout(() => {
-    if (!Net.hostConn?.open) { peer.destroy(); netStatus('연결하지 못했습니다. 코드를 확인하거나 다른 네트워크(예: 모바일 데이터)로 다시 시도하세요.'); }
-  }, 20000);
-  peer.on('open', () => guestConnect(timer));
-  peer.on('error', err => {
-    if (err.type === 'peer-unavailable') {
-      clearTimeout(timer);
-      if (Net.active && Net.retries > 0) return;
-      peer.destroy(); netStatus('그 코드의 방을 찾지 못했습니다. 방장이 페이지를 닫았거나 코드가 틀렸을 수 있습니다.');
-    } else if (!Net.active) { clearTimeout(timer); netStatus('연결 서버에 닿지 못했습니다. 잠시 후 다시 시도하세요.'); }
-  });
-  peer.on('disconnected', () => setTimeout(() => { if (!Net.leaving && !peer.destroyed && peer.disconnected) { try { peer.reconnect(); } catch {} } }, 3000));
+  guestAttempt(() => netStatus('방에 연결하지 못했습니다. 코드가 맞는지, 방장이 방 화면을 켜 두었는지 확인하고 다시 시도하세요.'));
 }
-function guestConnect(timer) {
-  const conn = Net.peer.connect(ROOM_PREFIX + Net.code, { reliable:true, serialization:'json' });
-  Net.hostConn = conn;
-  conn.on('open', () => {
-    clearTimeout(timer);
-    Net.retries = 0;
-    Net.heard = Date.now();
-    conn.send({ t:'join', name:Net.name, token:netToken() });
-    renderRoom();
+/* Try the direct link first, then the relay. Used for the first join and every reconnect. */
+function guestAttempt(onFail) {
+  let settled = false;
+  const won = conn => {
+    if (settled) { if (conn !== Net.hostConn) { try { conn.close(); } catch {} } return; }
+    settled = true;
+    clearTimeout(giveUp);
+    clearTimeout(relayTimer);
+    guestUse(conn);
+  };
+  const giveUp = setTimeout(() => { if (settled) return; settled = true; onFail(); }, 24000);
+  const startRelay = () => { if (!settled) guestRelay(won); };
+  let relayTimer = setTimeout(startRelay, 6000);
+  guestDirect(won, () => { clearTimeout(relayTimer); startRelay(); });
+}
+function guestDirect(won, failed) {
+  if (!Net.peer || Net.peer.destroyed) Net.peer = newPeer();
+  const peer = Net.peer;
+  if (!peer) { failed(); return; }
+  const go = () => {
+    const conn = peer.connect(ROOM_PREFIX + Net.code, { reliable:true, serialization:'json' });
+    conn.on('open', () => won(conn));
+    conn.on('error', failed);
+  };
+  if (peer.open) go();
+  else if (!peer._wired) {
+    peer._wired = true;
+    peer.on('open', go);
+    peer.on('error', failed);
+    peer.on('disconnected', () => setTimeout(() => { if (!Net.leaving && !peer.destroyed && peer.disconnected) { try { peer.reconnect(); } catch {} } }, 3000));
+  }
+}
+function guestRelay(won) {
+  relayStop();
+  const token = netToken(), base = `${RELAY_ROOT}${Net.code}`, inbox = `${base}/g/${token}`, join = () => JSON.stringify({ from:token, m:{ t:'join', name:Net.name, token } });
+  let conn = null;
+  const knock = setInterval(() => {
+    if (conn) { clearInterval(knock); return; }
+    Relay.clients.forEach(c => { if (c.connected) c.publish(`${base}/h`, join(), { qos:0 }); });
+  }, 1500);
+  setTimeout(() => clearInterval(knock), 22000);
+  relayConnect(c => c.subscribe(inbox, { qos:1 }), (client, env) => {
+    if (!env || env.m === undefined) return;
+    if (!conn) {
+      conn = new RelayConn(client, `${base}/h`, token);
+      Relay.clients.filter(c => c !== client).forEach(c => { try { c.end(true); } catch {} });
+      Relay.clients = [client];
+      guestPending = env.m;
+      won(conn);
+      return;
+    }
+    if (conn.client === client) conn.fire('data', env.m);
   });
+}
+let guestPending = null;
+function guestUse(conn) {
+  Net.hostConn = conn;
+  Net.retries = 0;
+  Net.heard = Date.now();
   conn.on('data', guestHandle);
   conn.on('close', () => { if (conn === Net.hostConn) guestLost(); });
   conn.on('error', () => { if (conn === Net.hostConn) guestLost(); });
+  conn.send({ t:'join', name:Net.name, token:netToken() });
+  if (guestPending) { const m = guestPending; guestPending = null; guestHandle(m); }
+  renderRoom();
 }
 function guestHandle(m) {
   if (!m || typeof m !== 'object') return;
@@ -1290,6 +1390,7 @@ function guestHandle(m) {
   if (m.t === 'reject') {
     Net.leaving = true;
     Net.peer?.destroy();
+    relayStop();
     netStatus(m.why === 'started' ? '이미 게임이 시작된 방입니다.' : '방이 가득 찼습니다.');
     return;
   }
@@ -1313,15 +1414,13 @@ function guestLost() {
   if (Net.leaving || !Net.active || Net.retries > 0) return;
   Net.retries = 1;
   renderRoom();
-  const tryAgain = () => {
-    if (Net.leaving || Net.hostConn?.open) return;
-    if (Net.retries > 6) { $('room-state').textContent = '방에 다시 연결하지 못했습니다. 방장이 나갔을 수 있습니다.'; return; }
+  const again = () => {
+    if (Net.leaving || Net.retries === 0) return;
+    if (Net.retries > 5) { $('room-state').textContent = '방에 다시 연결하지 못했습니다. 방장이 나갔을 수 있습니다.'; return; }
     Net.retries++;
-    if (Net.peer.disconnected) { try { Net.peer.reconnect(); } catch {} }
-    try { guestConnect(); } catch {}
-    setTimeout(tryAgain, 3000);
+    guestAttempt(() => setTimeout(again, 2000));
   };
-  setTimeout(tryAgain, 1500);
+  setTimeout(again, 1000);
 }
 function netPong() { if (Net.hostConn?.open) Net.hostConn.send({ t:'pong' }); }
 function netSendAct(m) { if (Net.hostConn?.open) Net.hostConn.send({ t:'act', m }); }
@@ -1362,6 +1461,7 @@ function renderRoom() {
   $('n-addcpu').hidden = !(host && Net.game === 'life');
   $('n-addcpu').disabled = Net.seats.length >= CAPACITY.life;
   $('n-wait').hidden = host;
+  $('n-hostnote').hidden = !host;
   const lost = Net.role === 'guest' && Net.retries > 0;
   $('room-state').textContent = lost ? '연결이 끊겨 다시 연결하는 중입니다.' : '';
 }
