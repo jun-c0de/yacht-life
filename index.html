@@ -20,7 +20,7 @@
   --ivory: #fbf7ec; --ivory-edge: #dcd5c2; --pip: #17262f; --shadow: #00000066;
   --land: #3f9e60; --road: #e6d59f; --up: #52e394; --p1: #e5383b; --p2: #1f6fd1;
   --t-pay: #1f8f52; --t-act: #f4944a; --t-opt: #2a74c9; --t-stop: #cf2f33; --t-life: #f6c91f; --t-job: #7d4bc0; --t-baby: #f39ac0; --t-rest: #e8edf0;
-  --t-ink: #1c1a10; --t-paper: #ffffff;
+  --t-ink: #1c1a10; --t-paper: #ffffff; --t-tax: #8c3324; --t-raise: #12a58a;
   --font-display: "Black Han Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-ui: "Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
@@ -287,7 +287,8 @@ tr.total .cell { font-family: var(--font-display); font-weight: 400; font-size: 
 .t-pay rect { fill: var(--t-pay); } .t-act rect { fill: var(--t-act); } .t-opt rect { fill: var(--t-opt); }
 .t-stop rect { fill: var(--t-stop); } .t-life rect { fill: var(--t-life); } .t-job rect { fill: var(--t-job); }
 .t-baby rect { fill: var(--t-baby); } .t-rest rect { fill: var(--t-rest); }
-.t-pay text, .t-opt text, .t-stop text, .t-job text { fill: var(--t-paper); }
+.t-tax rect { fill: var(--t-tax); } .t-raise rect { fill: var(--t-raise); }
+.t-pay text, .t-opt text, .t-stop text, .t-job text, .t-tax text, .t-raise text { fill: var(--t-paper); }
 .t-act text, .t-life text, .t-baby text, .t-rest text { fill: var(--t-ink); }
 .tile.choice rect { stroke: var(--ink); stroke-width: 6; animation: tile-pulse 1s ease-in-out infinite alternate; }
 @keyframes tile-pulse { to { stroke-width: 2; } }
@@ -1048,7 +1049,7 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
   <section class="m-players" id="m-players" aria-label="플레이어 현황"></section>
   <ul class="l-log" id="m-log" aria-label="최근 기록"></ul>
   <section class="rules" aria-label="부루마불 규칙">
-    <p><strong>진행.</strong> 주사위 2개의 합만큼 이동합니다. 더블이면 한 번 더 굴립니다. 출발지를 지나면 월급 20만원을 받습니다. 빈 땅은 살 수 있고, 내 땅에는 별장, 빌딩, 호텔을 지을 수 있습니다.</p>
+    <p><strong>진행.</strong> 주사위 2개의 합만큼 이동합니다. 더블이면 한 번 더 굴립니다. 출발지를 지나면 월급 20만원을 받습니다. 빈 땅에 서면 땅만 사거나 별장, 빌딩, 호텔까지 한 번에 살 수 있고, 내 땅에 다시 서면 건물을 더 높일 수 있습니다.</p>
     <p><strong>특수 칸.</strong> 무인도에서는 3턴 동안 더블을 노립니다. 우주여행 칸에 서면 다음 차례에 원하는 곳으로 갑니다. 기금 접수처에서 낸 15만원은 수령처에 도착한 사람이 모두 가져갑니다.</p>
     <p><strong>승리.</strong> 돈이 모자라면 건물과 땅이 산 값에 자동으로 팔리고, 그래도 부족하면 파산합니다. 혼자 남거나 정한 라운드가 끝났을 때 총재산이 가장 많은 사람이 이깁니다.</p>
   </section>
@@ -1168,6 +1169,8 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
   <ul class="l-log" id="l-log" aria-label="최근 기록"></ul>
   <div class="l-legend" aria-label="칸 색상 안내">
     <span><i style="background:var(--t-pay)"></i>월급날</span>
+    <span><i style="background:var(--t-raise)"></i>월급 인상</span>
+    <span><i style="background:var(--t-tax)"></i>세금 납부</span>
     <span><i style="background:var(--t-life)"></i>인생 카드</span>
     <span><i style="background:var(--t-act)"></i>돈이 오가는 일</span>
     <span><i style="background:var(--t-opt)"></i>선택</span>
@@ -1176,7 +1179,7 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
     <span><i style="background:var(--t-baby)"></i>가족</span>
   </div>
   <section class="rules" aria-label="인생게임 규칙">
-    <p><strong>진행.</strong> 룰렛 숫자만큼 이동합니다. 월급날은 지나가기만 해도 월급을 받습니다. 빨간 칸에서는 이동을 멈추고, 할 일을 마친 뒤 한 번 더 돌립니다.</p>
+    <p><strong>진행.</strong> 룰렛 숫자만큼 이동합니다. 월급날은 지나가기만 해도 월급을 받습니다. 빨간 칸에서는 이동을 멈추고, 할 일을 마친 뒤 한 번 더 돌립니다. 월급 인상 칸에서는 월급이 1,000만원 오르고, 세금 칸에서는 월급에 따라 10~30%를 냅니다.</p>
     <p><strong>돈 관리.</strong> 룰렛을 돌리기 전에 대출, 보험, 주식을 이용할 수 있습니다. 대출은 2,000만원씩 받아 2,500만원으로 갚습니다. 내 주식 번호가 나오면 누가 돌렸든 1,000만원을 받습니다.</p>
     <p><strong>승리.</strong> 은퇴하면 집을 팔고 빚을 갚은 뒤 부촌이나 전원마을을 고릅니다. 모두 은퇴하면 인생 카드를 공개해 현금과 합산하고, 총액이 가장 많은 사람이 이깁니다.</p>
   </section>
@@ -2336,6 +2339,9 @@ const Life = (function () {
     { n:'아파트', price:12000, ins:1500 }, { n:'타운하우스', price:15000, ins:2000 }, { n:'한옥', price:18000, ins:2500 }, { n:'펜트하우스', price:20000, ins:3000 },
   ];
   const TILE_VALUES = [3000,3000,3000,6000,6000,6000,9000,9000,12000,12000,15000,30000];
+  /* Higher salaries fall into higher tax brackets. */
+  const taxRate = sal => (sal <= 3000 ? .1 : sal <= 6000 ? .2 : sal <= 8000 ? .25 : .3);
+  const RAISE = 1000;
   const LOAN = 2000, LOAN_BACK = 2500, CAR_INS = 1000, STOCK = 5000, STOCK_PAY = 1000, GIFT = 300, SPEEDING = 500, NIGHT = 2000;
   const COLORS = ['#e5383b', '#1f6fd1', '#159a6b', '#8a3fc7'];
 
@@ -2347,6 +2353,8 @@ const Life = (function () {
   const I = (kind, s, amt, txt) => ({ t:'ins', kind, s, amt, txt });
   const O = (s, cost, txt) => ({ t:'opt', s, cost, txt });
   const B = n => ({ t:'baby', n, s: n === 2 ? '쌍둥이' : '아기' });
+  const Tax = (s = '세금 납부') => ({ t:'tax', s, txt:'월급이 많을수록 세금도 많이 냅니다.' });
+  const Raise = (s = '월급 인상') => ({ t:'raise', s, txt:'월급이 1,000만원 오릅니다.' });
   const Fired = (s = '실직') => ({ t:'fired', s });
   const Night = () => ({ t:'night', s:'야간대학' });
   const Zoom = () => ({ t:'zoom', s:'주가급등' });
@@ -2376,59 +2384,59 @@ const Life = (function () {
   BOARD[collegeEnd].next.push(jobSpot);
   const careerEnd = lane(START, row(1, 0, 9), [
     P(), A('정장', -100, '면접용 정장을 샀습니다.'), L('신입상', '신입사원상을 받았습니다.'), P(), C('dev', 'PC 수리', -200),
-    A('회식', -100, '회식비를 냅니다.'), P(), L('자격증', '자격증을 땄습니다.'), A('성과금', 800, '성과금을 받았습니다.'), P(),
+    Tax(), P(), Raise('자격수당'), A('성과금', 800, '성과금을 받았습니다.'), P(),
   ]);
   const merge1 = put(10, 1, P());
   BOARD[jobSpot].next.push(merge1); BOARD[careerEnd].next.push(merge1);
   const youthEnd = lane(merge1, [[11,1],[12,1],[13,1],[13,2], ...row(2, 12, 0)], [
     L('독립', '첫 자취를 시작했습니다.'), A('이사비', -300, '이사 비용을 냅니다.'), P(), L('첫사랑', '잊지 못할 사람을 만났습니다.'),
     A('데이트', -200, '데이트 비용이 나갑니다.'), I('car', '접촉사고', -1000, '차를 긁었습니다.'), P(), C('lawyer', '계약 상담', -500),
-    O('해외여행', 500, '인생 여행을 떠날까요?'), Marry(), L('신혼여행', '신혼여행을 다녀왔습니다.'), A('가전 구입', -500, '혼수 가전을 샀습니다.'), P(),
+    O('해외여행', 500, '인생 여행을 떠날까요?'), Marry(), L('신혼여행', '신혼여행을 다녀왔습니다.'), Tax(), P(),
     C('actor', '콘서트', -300), Zoom(), C('accountant', '세금 신고', -500), P(),
   ]);
   const fork1 = put(0, 3, Rest([['가족의 길', '아이와 인생 카드가 많습니다'], ['커리어의 길', '승진과 이직, 보너스가 많습니다']]));
   BOARD[youthEnd].next.push(fork1);
   const familyEnd = lane(fork1, row(3, 1, 13), [
     B(1), A('분유값', -200, '분유값이 나갑니다.'), L('첫걸음', '아이가 첫걸음을 뗐습니다.'), P(), B(2), C('teacher', '학원비', -500),
-    L('가족사진', '온 가족이 사진을 찍었습니다.'), P(), A('가족여행', -500, '가족여행을 다녀왔습니다.'), L('운동회', '운동회에서 1등을 했습니다.'),
+    L('가족사진', '온 가족이 사진을 찍었습니다.'), P(), Tax(), Raise(),
     O('반려견', 300, '강아지를 입양할까요?'), B(1), P(),
   ]);
   const workEnd = lane(fork1, row(4, 0, 12), [
-    P(), A('승진', 1000, '승진했습니다.'), Night(), L('특허', '특허를 냈습니다.'), P(), C('dev', '서버비', -500), Fired(),
+    P(), Raise('승진'), Night(), L('특허', '특허를 냈습니다.'), P(), C('dev', '서버비', -500), Fired(),
     A('보너스', 2000, '연말 보너스를 받았습니다.'), O('MBA', 1000, 'MBA 과정을 밟을까요?'), L('표창', '대표 표창을 받았습니다.'), P(),
-    A('출장', -500, '출장 경비를 먼저 씁니다.'), P(),
+    Tax(), P(),
   ]);
   const merge2 = put(13, 4, A('정기예금', 500, '정기예금이 만기됐습니다.'));
   BOARD[familyEnd].next.push(merge2); BOARD[workEnd].next.push(merge2);
   const midEnd = lane(merge2, [[13,5], ...row(5, 12, 0)], [
-    House(), I('home', '태풍', -2000, '태풍으로 집이 망가졌습니다.'), L('집들이', '집들이가 즐거웠습니다.'), A('인테리어', -500, '집을 고쳤습니다.'),
-    C('doctor', '건강검진', -500), P(), Slump(), B(1), Lotto(), L('학부모회', '학부모회장이 됐습니다.'), I('car', '차량 도난', -1000, '차를 도난당했습니다.'), P(),
+    House(), I('home', '태풍', -2000, '태풍으로 집이 망가졌습니다.'), L('집들이', '집들이가 즐거웠습니다.'), Tax(),
+    C('doctor', '건강검진', -500), P(), Slump(), B(1), Lotto(), Raise(), I('car', '차량 도난', -1000, '차를 도난당했습니다.'), P(),
     C('athlete', '직관', -200), Fired('중년 위기'),
   ]);
   const fork2 = put(0, 6, Rest([['모험의 길', '큰돈을 벌거나 잃습니다'], ['안전한 길', '인생 카드가 많고 변동이 적습니다']]));
   BOARD[midEnd].next.push(fork2);
   const riskEnd = lane(fork2, row(6, 1, 13), [
     Lotto(), A('창업 성공', 3000, '창업이 성공했습니다.'), A('코인 폭락', -3000, '코인이 폭락했습니다.'), L('출판', '책을 냈습니다.'), P(),
-    I('home', '화재', -4000, '집에 불이 났습니다.'), A('투자 대박', 5000, '투자가 대박 났습니다.'), Fired(), L('신기록', '마라톤 신기록을 세웠습니다.'), Zoom(), P(),
-    A('사기 피해', -2000, '사기를 당했습니다.'), Lotto(),
+    I('home', '화재', -4000, '집에 불이 났습니다.'), A('투자 대박', 5000, '투자가 대박 났습니다.'), Fired(), Raise(), Zoom(), P(),
+    Tax(), Lotto(),
   ]);
   const safeEnd = lane(fork2, row(7, 0, 12), [
     L('텃밭', '텃밭 농사가 풍년입니다.'), P(), A('적금', 500, '적금을 탔습니다.'), L('은혼식', '은혼식을 올렸습니다.'), C('doctor', '치과', -500), P(),
-    O('기부', 500, '장학금을 기부할까요?'), L('동창회', '동창회장이 됐습니다.'), A('환급금', 300, '세금을 돌려받았습니다.'), P(), L('산책', '건강을 되찾았습니다.'),
-    A('재산세', -200, '재산세를 냅니다.'), P(),
+    O('기부', 500, '장학금을 기부할까요?'), L('동창회', '동창회장이 됐습니다.'), Raise(), P(), L('산책', '건강을 되찾았습니다.'),
+    Tax(), P(),
   ]);
   const merge3 = put(13, 7, P());
   BOARD[riskEnd].next.push(merge3); BOARD[safeEnd].next.push(merge3);
   const lastEnd = lane(merge3, [[13,8], ...row(8, 12, 1)], [
     A('퇴직금', 1000, '퇴직금을 받았습니다.'), L('손주', '손주가 태어났습니다.'), P(), C('doctor', '입원비', -1000), L('자서전', '자서전을 썼습니다.'),
-    A('칠순잔치', -500, '칠순잔치를 열었습니다.'), I('home', '누수', -2000, '집에 물이 샙니다.'), L('세계일주', '세계일주를 다녀왔습니다.'), P(),
+    Tax(), I('home', '누수', -2000, '집에 물이 샙니다.'), L('세계일주', '세계일주를 다녀왔습니다.'), P(),
     C('sales', '새 차', -1000), O('후원', 1000, '후배들을 후원할까요?'), L('회고록', '회고록을 남겼습니다.'), P(),
   ]);
   const RETIRE = put(0, 8, { t:'retire', s:'은퇴' });
   BOARD[lastEnd].next.push(RETIRE);
 
   const STOPS = ['marry', 'job', 'house', 'retire'];
-  const tileClass = n => ({ pay:'t-pay', act:'t-act', opt:'t-opt', life:'t-life', career:'t-job', ins:'t-act', baby:'t-baby', rest:'t-rest', fired:'t-act', night:'t-opt', zoom:'t-act', slump:'t-act', lotto:'t-opt', marry:'t-stop', job:'t-stop', house:'t-stop', retire:'t-stop' }[n.t]);
+  const tileClass = n => ({ tax:'t-tax', raise:'t-raise', pay:'t-pay', act:'t-act', opt:'t-opt', life:'t-life', career:'t-job', ins:'t-act', baby:'t-baby', rest:'t-rest', fired:'t-act', night:'t-opt', zoom:'t-act', slump:'t-act', lotto:'t-opt', marry:'t-stop', job:'t-stop', house:'t-stop', retire:'t-stop' }[n.t]);
   const BW = 1400, BH = 1296, PITCH_X = 96, PITCH_Y = 122, EXTRA_TOP = 150;
   const rowY = r => 78 + r * PITCH_Y + (r >= 1 ? EXTRA_TOP : 0);
   const centre = id => {
@@ -2499,6 +2507,8 @@ const Life = (function () {
       let icon = '';
       if (!sub && lines.length === 1) {
         if (n.t === 'pay') icon = `<circle class="ic" cy="-13" r="10" fill="#ffd64a"/><text y="-8" style="font-size:13px;fill:#7a5200">₩</text>`;
+        else if (n.t === 'tax') icon = `<rect class="ic" x="-11" y="-25" width="22" height="21" rx="3" fill="#fff"/><text y="-9" style="font-size:15px;fill:#7a2418">%</text>`;
+        else if (n.t === 'raise') icon = `<path class="ic" d="M0-27 12-13H5V-3H-5V-13H-12Z" fill="#fff"/>`;
         else if (n.t === 'life') icon = `<path class="ic" d="M0-24 3-16 11-16 5-11 7-3 0-8-7-3-5-11-11-16-3-16Z" fill="#fff"/>`;
         else if (n.t === 'baby') icon = `<circle class="ic" cy="-16" r="7" fill="#fff"/><path class="ic" d="M-6-3Q0-12 6-3Z" fill="#fff"/>`;
         else if (n.t === 'marry') icon = `<circle cx="-5" cy="-14" r="7" fill="none" stroke="#ffe07a" stroke-width="3"/><circle cx="5" cy="-14" r="7" fill="none" stroke="#ffe07a" stroke-width="3"/>`;
@@ -2924,6 +2934,17 @@ const Life = (function () {
         return announce(p, n.s, n.txt, n.amt);
       case 'life':
         return announce(p, n.s, `${n.txt} ${drawTile(p)}`);
+      case 'tax': {
+        if (!p.sal) return announce(p, n.s, '월급이 없어 낼 세금이 없습니다.');
+        const rate = taxRate(p.sal), due = Math.round(p.sal * rate / 10) * 10;
+        charge(p, due);
+        return announce(p, n.s, `월급 ${fmt(p.sal)}의 ${Math.round(rate * 100)}%를 냅니다.`, -due);
+      }
+      case 'raise': {
+        if (!p.job) return announce(p, n.s, '아직 직업이 없어 그냥 지나갑니다.');
+        p.sal += RAISE;
+        return announce(p, n.s, `월급이 ${fmt(p.sal)}으로 올랐습니다.`);
+      }
       case 'ins': {
         const has = n.kind === 'car' ? p.carIns : p.homeIns;
         if (n.kind === 'home' && !p.house) return announce(p, n.s, '집이 없어서 피해가 없습니다.');
@@ -3208,6 +3229,7 @@ const Life = (function () {
     snapshot: () => (lastSaved ? JSON.parse(lastSaved) : null),
     onShow() { syncSound(); if (S && !S.over) followPawn(S.players[S.turn], false); },
     board: BOARD,
+    get state() { return S; },
   };
 })();
 
@@ -3261,7 +3283,7 @@ const Marble = (function () {
     place('서울', 'korea', 1000, 2000),
   ];
   const ISLAND = 10, FUND = 20, SPACE = 30, CONCORDE = 15, QUEEN = 28, COLUMBIA = 32, JEJU = 5, BUSAN = 25, SEOUL = 39;
-  const SALARY = 200, FUND_FEE = 150, RIDE_FEE = 200, START_CASH = 2930;
+  const SALARY = 200, FUND_FEE = 150, RIDE_FEE = 200, START_CASH = 2000, START_CASH_DUO = 3000;
   const COLORS = ['#e5383b', '#1f6fd1', '#159a6b', '#8a3fc7'];
   const LV = ['', '별장 1채', '별장 2채', '빌딩', '호텔'];
   const CARDS = [
@@ -3352,7 +3374,7 @@ const Marble = (function () {
   function save() { if (Net.active) return; try { localStorage.setItem('marble-game', JSON.stringify(S)); } catch {} }
   const iControl = seat => !Net.active || Net.seat === seat;
   function newGame(config, rounds) {
-    const cash = config.length === 2 ? START_CASH * 2 : START_CASH;
+    const cash = config.length === 2 ? START_CASH_DUO : START_CASH;
     return {
       players: config.map((c, i) => ({ name:c.name, cpu:c.cpu, color:COLORS[i], at:0, cash, out:false, island:0, space:false, spaceFree:false, radio:0, pass:0 })),
       own:{}, deck:shuffled(CARDS.map((_, i) => i)), pot:0, turn:0, round:1, rounds, log:[], over:false, final:null,
@@ -3612,22 +3634,29 @@ const Marble = (function () {
     if (t.k === 'fundpay') { const ok = pay(p, FUND_FEE, null); if (ok) S.pot += FUND_FEE; return announce(p, '사회복지기금 접수', '기금을 냈습니다.', -FUND_FEE); }
     if (t.k === 'space') { p.space = true; return announce(p, '우주여행', '다음 차례에 원하는 곳으로 갈 수 있습니다.'); }
   }
+  const buildCosts = t => [0, t.b[0], t.b[0] * 2, t.b[1], t.b[2]];
   async function buy(p, i) {
-    const t = BOARD[i];
-    const sel = await ask(p, `${p.name}: ${t.n}을(를) 살까요? (${fmt(t.p)})`, [
-      { label:'구입', sub:`통행료 ${fmt(t.k === 'city' ? t.r[0] : t.toll)}부터`, value:true, disabled:p.cash < t.p },
-      { label:'사지 않음', value:false },
-    ], o => (p.cash - t.p >= 300 ? o[0] : o[1]));
-    if (!sel.value) return announce(p, t.n, '사지 않고 지나갑니다.');
-    p.cash -= t.p;
-    S.own[i] = { o:seatOf(p), lv:0, inv:0 };
-    return announce(p, `${t.n} 구입`, '이제 내 땅입니다.', -t.p);
+    const t = BOARD[i], isCity = t.k === 'city', costs = isCity ? buildCosts(t) : [0];
+    const opts = [{ label:'땅만 구입', sub:`${fmt(t.p)} · 통행료 ${fmt(isCity ? t.r[0] : t.toll)}`, value:0, cost:t.p, disabled:p.cash < t.p }];
+    if (isCity) [1, 2, 3, 4].forEach(lv => {
+      const cost = t.p + costs[lv];
+      opts.push({ label:`땅 + ${LV[lv]}`, sub:`${fmt(cost)} · 통행료 ${fmt(t.r[lv])}`, value:lv, cost, disabled:p.cash < cost });
+    });
+    opts.push({ label:'사지 않음', value:-1, cost:0 });
+    const sel = await ask(p, `${p.name}: ${t.n}을(를) 살까요?`, opts, list => {
+      const buyable = list.filter(o => o.value >= 0 && p.cash - o.cost >= (o.value ? 600 : 300));
+      return buyable.length ? buyable[buyable.length - 1] : list[list.length - 1];
+    });
+    if (sel.value < 0) return announce(p, t.n, '사지 않고 지나갑니다.');
+    p.cash -= sel.cost;
+    S.own[i] = { o:seatOf(p), lv:sel.value, inv:costs[sel.value] };
+    return announce(p, `${t.n} 구입`, sel.value ? `${LV[sel.value]}까지 함께 지었습니다.` : '이제 내 땅입니다.', -sel.cost);
   }
   async function build(p, i) {
     const t = BOARD[i], o = S.own[i];
     if (t.k !== 'city' || o.lv === 4) return announce(p, t.n, '내 땅에 도착했습니다.');
-    const costs = [0, t.b[0], t.b[0] * 2, t.b[1], t.b[2]];
-    const opts = [1, 2, 3, 4].filter(lv => lv > o.lv && !(lv === 2 && o.lv < 1 && false)).map(lv => {
+    const costs = buildCosts(t);
+    const opts = [1, 2, 3, 4].filter(lv => lv > o.lv).map(lv => {
       const c = costs[lv] - o.inv;
       return { label:LV[lv], sub:`${fmt(Math.max(0, c))} · 통행료 ${fmt(t.r[lv])}`, value:lv, cost:Math.max(0, c), disabled:p.cash < Math.max(0, c) };
     });
