@@ -864,6 +864,61 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
   .l-wheelwrap { transition: none; }
 }
 
+/* 부루마불 */
+.m-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 14px; align-items: start; }
+.m-boardwrap { position: relative; min-width: 0; }
+.m-boardbox { background: linear-gradient(135deg, #f8f4e6, #dfd8c2); border-radius: 6px; padding: 10px; overflow: auto; box-shadow: 0 16px 28px #000a, 0 3px 0 #a9a28c, 0 5px 0 #807a66; }
+#m-board { display: block; width: 100%; height: auto; }
+.m-t { font-family: var(--font-ui); text-anchor: middle; fill: #2b2a22; }
+.m-price { font-family: var(--font-body); font-size: 13.5px; text-anchor: middle; fill: #5c5a4d; font-variant-numeric: tabular-nums; }
+.m-title { font-family: var(--font-display); font-size: 92px; text-anchor: middle; fill: #fff; stroke: #16365c; stroke-width: 10; paint-order: stroke fill; }
+.m-tile.hint rect:first-of-type { stroke: #e0263a; stroke-width: 5; }
+.picking .m-tile { cursor: pointer; }
+.picking .m-tile:hover rect:first-of-type { fill: #fff27a; }
+.m-pawn { transition: transform .15s ease-out; }
+.m-pawn.active circle:not(:last-child) { stroke: #fff; stroke-width: 3; }
+.m-dicetray { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); padding: 12px 16px; display: block; border: 0; border-radius: 14px; background: var(--fine-noise), radial-gradient(120% 100% at 50% 30%, #12777f, #084148); box-shadow: 0 0 0 5px #8a5a2e, 0 0 0 7px #3d2412, 0 12px 18px #000a, inset 0 5px 10px #0009; z-index: 2; }
+.m-dicetray.mine { cursor: pointer; animation: tray-ready 1.1s ease-in-out infinite alternate; }
+@keyframes tray-ready { to { box-shadow: 0 0 0 5px #ffd64a, 0 0 0 7px #7a5200, 0 12px 18px #000a, inset 0 5px 10px #0009, 0 0 18px #ffe07a; } }
+#m-dice { display: flex; gap: 14px; }
+.mdie { --d: clamp(38px, 6vw, 62px); width: var(--d); height: var(--d); perspective: 520px; filter: drop-shadow(2px 6px 4px #000a); }
+.mdie.rolling .hop { animation: hop .72s ease-out; }
+.m-panel { position: sticky; top: 10px; }
+.m-players { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.l-card.m-out { opacity: .55; filter: grayscale(.7); }
+.m-deeds { display: flex; flex-wrap: wrap; gap: 3px; }
+.m-deed { display: inline-flex; align-items: center; gap: 3px; padding: 1px 5px; border-radius: 3px; background: #fbf7ea; color: #2b3440; font-size: .68rem; line-height: 1.5; box-shadow: inset 4px 0 0 var(--c), 0 1px 2px #0008; padding-left: 8px; }
+.m-deed b { font-weight: 600; }
+.m-deed em { font-style: normal; color: #c0282a; font-weight: 700; }
+.box-marble .box-art { background: #173b6c; }
+.box-marble .box-body { background: #1a2f55; }
+.art-globe { position: relative; width: 118px; height: 118px; border-radius: 50%; background: radial-gradient(circle at 33% 28%, #9fd3ff, #2878c4 55%, #123f73); border: 4px solid #0b1a30; box-shadow: 0 6px 0 #0b1a30; overflow: hidden; }
+.art-globe::before, .art-globe::after { content: ""; position: absolute; background: #3fa55e; border-radius: 48% 62% 55% 45%; }
+.art-globe::before { width: 52px; height: 42px; left: 16px; top: 18px; }
+.art-globe::after { width: 38px; height: 34px; right: 12px; bottom: 16px; }
+.art-pawn { position: absolute; left: 58%; top: 30%; width: 26px; height: 42px; z-index: 2; }
+#view-home { max-width: 1180px; }
+.boxes { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.box h2 { font-size: 1.65rem; }
+@media (max-width: 1040px) { .boxes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 860px) {
+  .boxes { grid-template-columns: minmax(0, 1fr); }
+  .art-globe { width: 80px; height: 80px; }
+  .art-globe::before { width: 36px; height: 28px; left: 10px; top: 12px; }
+  .art-globe::after { width: 26px; height: 24px; right: 8px; bottom: 10px; }
+  .m-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .m-boardbox { max-height: 54vh; padding: 6px; }
+  #m-board { min-width: 760px; }
+  .m-panel { position: static; }
+  .m-dicetray { left: auto; top: 10px; right: 10px; transform: none; padding: 8px 10px; box-shadow: 0 0 0 3px #8a5a2e, 0 6px 10px #000a, inset 0 3px 6px #0009; }
+  #m-dice { gap: 8px; }
+  .mdie { --d: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-dicetray.mine, .mdie.rolling .hop { animation: none; }
+  .m-pawn { transition: none; }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
@@ -897,7 +952,15 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
         <span class="box-play" id="play-life">플레이</span>
       </div>
     </a>
-    <a class="box box-online" href="#online" data-view="online" style="--tilt:-.7deg">
+    <a class="box box-marble" href="#marble" data-view="marble" style="--tilt:-.5deg">
+      <div class="box-art" aria-hidden="true"><div class="art-globe"></div><svg class="art-pawn" viewBox="0 0 26 42"><path d="M3 40Q6 22 9 16H17Q20 22 23 40Z" fill="#e5383b" stroke="#111" stroke-width="2"/><circle cx="13" cy="10" r="9" fill="#e5383b" stroke="#111" stroke-width="2"/></svg></div>
+      <div class="box-body">
+        <h2>부루마불</h2>
+        <p>세계 도시를 사고 호텔을 지어 통행료를 받아요. 황금열쇠와 무인도도 있어요. 2~4명.</p>
+        <span class="box-play" id="play-marble">플레이</span>
+      </div>
+    </a>
+    <a class="box box-online" href="#online" data-view="online" style="--tilt:.7deg">
       <div class="box-art" aria-hidden="true"><div class="art-vs"><span class="art-p">나</span><span>VS</span><span class="art-p">친구</span></div></div>
       <div class="box-body">
         <h2>온라인 대전</h2>
@@ -926,6 +989,7 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
       <div class="seg" role="radiogroup" aria-label="게임 선택">
         <input type="radio" name="n-g" id="n-g-yacht" value="yacht" checked><label for="n-g-yacht">야추 다이스 (2명)</label>
         <input type="radio" name="n-g" id="n-g-life" value="life"><label for="n-g-life">인생게임 (2~4명)</label>
+        <input type="radio" name="n-g" id="n-g-marble" value="marble"><label for="n-g-marble">부루마불 (2~4명)</label>
       </div>
       <button class="roll" type="submit">방 만들기</button>
     </form>
@@ -959,6 +1023,55 @@ body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f);
     <button class="roll" id="n-start" type="button" disabled>게임 시작</button>
   </section>
 </div>
+
+<div class="wrap" id="view-marble" hidden>
+  <h1 class="sr">부루마불</h1>
+  <header class="view-head">
+    <div class="controls">
+      <button class="btn" id="m-sound" type="button"></button>
+      <button class="btn solo-only" id="m-new" type="button">새 게임</button>
+    </div>
+  </header>
+  <main class="m-grid">
+    <div class="m-boardwrap" id="m-boardwrap">
+      <div class="m-boardbox" id="m-boardbox"><svg id="m-board" viewBox="0 0 1100 1100" role="img" aria-label="부루마불 말판"></svg></div>
+      <div class="m-dicetray" id="m-trayhint" aria-hidden="true"><div id="m-dice"></div></div>
+    </div>
+    <section class="l-panel m-panel" id="m-panel" aria-label="내 차례 조작">
+      <div class="l-top"><span class="l-who" id="m-who"></span><span class="l-age" id="m-age"></span></div>
+      <p class="l-msg" id="m-msg" role="status" aria-live="polite"></p>
+      <div class="l-event" id="m-event"></div>
+      <div class="l-choices" id="m-choices"></div>
+      <button class="roll" id="m-roll" type="button" disabled>주사위 굴리기</button>
+    </section>
+  </main>
+  <section class="m-players" id="m-players" aria-label="플레이어 현황"></section>
+  <ul class="l-log" id="m-log" aria-label="최근 기록"></ul>
+  <section class="rules" aria-label="부루마불 규칙">
+    <p><strong>진행.</strong> 주사위 2개의 합만큼 이동합니다. 더블이면 한 번 더 굴립니다. 출발지를 지나면 월급 20만원을 받습니다. 빈 땅은 살 수 있고, 내 땅에는 별장, 빌딩, 호텔을 지을 수 있습니다.</p>
+    <p><strong>특수 칸.</strong> 무인도에서는 3턴 동안 더블을 노립니다. 우주여행 칸에 서면 다음 차례에 원하는 곳으로 갑니다. 기금 접수처에서 낸 15만원은 수령처에 도착한 사람이 모두 가져갑니다.</p>
+    <p><strong>승리.</strong> 돈이 모자라면 건물과 땅이 산 값에 자동으로 팔리고, 그래도 부족하면 파산합니다. 혼자 남거나 정한 라운드가 끝났을 때 총재산이 가장 많은 사람이 이깁니다.</p>
+  </section>
+</div>
+
+<dialog id="m-setup">
+  <form class="l-form" id="m-form" method="dialog">
+    <h2>새 부루마불</h2>
+    <div class="seg" role="radiogroup" aria-label="인원">
+      <input type="radio" name="m-count" id="m-c2" value="2"><label for="m-c2">2명</label>
+      <input type="radio" name="m-count" id="m-c3" value="3" checked><label for="m-c3">3명</label>
+      <input type="radio" name="m-count" id="m-c4" value="4"><label for="m-c4">4명</label>
+    </div>
+    <div id="m-setup-rows" style="display:grid;gap:6px"></div>
+    <label for="m-rounds" style="font-size:.85rem">게임 길이</label>
+    <select id="m-rounds"><option value="15">15라운드 (짧게)</option><option value="25" selected>25라운드</option><option value="0">끝까지 (한 명만 남을 때까지)</option></select>
+    <p id="m-setup-warn" style="margin:0;font-size:.82rem;color:var(--muted)">시작하면 진행 중인 게임은 사라집니다.</p>
+    <div class="dlg-row">
+      <button class="btn" id="m-setup-no" type="button">취소</button>
+      <button class="btn danger" id="m-setup-yes" type="submit">시작</button>
+    </div>
+  </form>
+</dialog>
 
 <dialog id="leave-dlg">
   <p>방을 나갈까요? 방장이 나가면 모두의 게임이 끝납니다.</p>
@@ -1100,7 +1213,7 @@ let view = 'yacht';
 const Net = { active:false, role:null, game:null, seat:0, code:null, peer:null, started:false, seats:[], conns:new Map(), hostConn:null, leaving:false, last:null, lastText:null, retries:0, name:'' };
 const ROOM_PREFIX = 'yacht-life-room-v1-';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-const CAPACITY = { yacht:2, life:4 };
+const CAPACITY = { yacht:2, life:4, marble:4 };
 function netToken() {
   try {
     let t = sessionStorage.getItem('net-token');
@@ -1117,7 +1230,7 @@ function newPeer(id) {
 function netEnter(role, game, code) {
   Net.active = true; Net.role = role; Net.game = game; Net.code = code;
   document.body.classList.add('in-room');
-  Life.enterRoom(); yachtEnterRoom();
+  Life.enterRoom(); Marble.enterRoom(); yachtEnterRoom();
   requestWake();
 }
 let wakeLock = null;
@@ -1148,7 +1261,7 @@ class RelayConn {
   fire(name, arg) { (this.handlers[name] || []).forEach(fn => fn(arg)); }
   publish(m, qos) { if (this.open) this.client.publish(this.topic, JSON.stringify(this.from ? { from:this.from, m } : { m }), { qos }); }
   send(m) {
-    if (m && (m.t === 'life' || m.t === 'yacht')) {
+    if (m && (m.t === 'life' || m.t === 'yacht' || m.t === 'marble')) {
       /* Game state is absolute, so only the newest copy in a burst needs to travel. */
       this.pendingState = m;
       if (!this.timer) this.timer = setTimeout(() => { this.timer = null; const st = this.pendingState; this.pendingState = null; if (st) this.publish(st, 0); }, 90);
@@ -1244,7 +1357,7 @@ function hostHandle(conn, m) {
   if (m.t === 'act') {
     const seat = seatOf(conn);
     if (seat < 0 || !Net.started) return;
-    if (Net.game === 'life') Life.act(seat, m.m); else yachtAct(seat, m.m);
+    if (Net.game === 'life') Life.act(seat, m.m); else if (Net.game === 'marble') Marble.act(seat, m.m); else yachtAct(seat, m.m);
   }
 }
 function hostOnClose(conn) {
@@ -1258,7 +1371,7 @@ function hostOnClose(conn) {
   hostLobby();
 }
 function hostSeatChange(i, cpu) {
-  if (Net.game === 'life') Life.seatChange(i, cpu); else yachtSeatChange(i, cpu);
+  if (Net.game === 'life') Life.seatChange(i, cpu); else if (Net.game === 'marble') Marble.seatChange(i, cpu); else yachtSeatChange(i, cpu);
 }
 const publicSeats = () => Net.seats.map(s => ({ name:s.name, online:s.online, cpu:s.cpu }));
 function hostLobby() {
@@ -1277,12 +1390,13 @@ function netStart() {
   Net.started = true;
   hostLobby();
   if (Net.game === 'life') Life.startOnline(Net.seats.map(s => ({ name:s.name, cpu:s.cpu })));
+  else if (Net.game === 'marble') Marble.startOnline(Net.seats.map(s => ({ name:s.name, cpu:s.cpu })));
   else yachtStartOnline(Net.seats);
   route();
 }
-function netRestart() { if (Net.role === 'host' && Net.started) { Net.lastText = null; if (Net.game === 'life') Life.startOnline(Net.seats.map(s => ({ name:s.name, cpu:s.cpu || !s.online }))); else { yachtStartOnline(Net.seats); Net.seats.forEach((s, i) => { if (!s.online) yachtSeatChange(i, true); }); } } }
+function netRestart() { if (Net.role === 'host' && Net.started) { Net.lastText = null; if (Net.game === 'life') Life.startOnline(Net.seats.map(s => ({ name:s.name, cpu:s.cpu || !s.online }))); else if (Net.game === 'marble') Marble.startOnline(Net.seats.map(s => ({ name:s.name, cpu:s.cpu || !s.online }))); else { yachtStartOnline(Net.seats); Net.seats.forEach((s, i) => { if (!s.online) yachtSeatChange(i, true); }); } } }
 function netAddCpu() {
-  if (Net.role !== 'host' || Net.started || Net.game !== 'life' || Net.seats.length >= CAPACITY.life) return;
+  if (Net.role !== 'host' || Net.started || Net.game === 'yacht' || Net.seats.length >= CAPACITY[Net.game]) return;
   Net.seats.push({ name:`컴퓨터 ${Net.seats.filter(s => s.cpu).length + 1}`, token:'cpu' + Math.random(), online:true, cpu:true, conn:null });
   hostLobby();
 }
@@ -1409,6 +1523,7 @@ function guestHandle(m) {
   }
   if (m.t === 'yacht') yachtApply(m.state);
   if (m.t === 'life') Life.applyRemote(m.S, m.U);
+  if (m.t === 'marble') Marble.applyRemote(m.S, m.U);
 }
 function guestLost() {
   if (Net.leaving || !Net.active || Net.retries > 0) return;
@@ -1453,12 +1568,12 @@ function renderRoom() {
   $('n-code').textContent = Net.code;
   $('room-code').textContent = Net.code;
   $('n-link').value = roomLink();
-  $('n-game').textContent = Net.game === 'life' ? '인생게임 · 최대 4명' : '야추 다이스 · 2명';
+  $('n-game').textContent = { life:'인생게임 · 최대 4명', marble:'부루마불 · 최대 4명', yacht:'야추 다이스 · 2명' }[Net.game];
   const host = Net.role === 'host';
   $('n-start').hidden = !host;
   $('n-start').disabled = Net.seats.length < 2;
   $('n-start').textContent = Net.seats.length < 2 ? '친구를 기다리는 중' : '게임 시작';
-  $('n-addcpu').hidden = !(host && Net.game === 'life');
+  $('n-addcpu').hidden = !(host && Net.game !== 'yacht');
   $('n-addcpu').disabled = Net.seats.length >= CAPACITY.life;
   $('n-wait').hidden = host;
   $('n-hostnote').hidden = !host;
@@ -3016,7 +3131,7 @@ const Life = (function () {
     S = s; U = u;
     paint();
   }
-  function enterRoom() { run++; pending = null; bankPlayer = null; S = null; q('l-pawns').innerHTML = ''; paintedChoice = -1; }
+  function enterRoom() { run++; pending = null; bankPlayer = null; S = null; q('l-pawns').innerHTML = ''; paintedChoice = -1; lastFollow = null; }
 
   /* ----- Setup dialog ----- */
   let setupConfig = [{ name:'나', cpu:false }, { name:'컴퓨터 1', cpu:true }, { name:'컴퓨터 2', cpu:true }, { name:'컴퓨터 3', cpu:true }];
@@ -3096,29 +3211,670 @@ const Life = (function () {
   };
 })();
 
+/* ---------- 부루마불 ---------- */
+const Marble = (function () {
+  const q = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+  /* Money is stored in units of 1,000원. */
+  function fmt(v) {
+    const neg = v < 0; v = Math.abs(Math.round(v));
+    const man = Math.floor(v / 10), chun = v % 10;
+    let s = man ? man.toLocaleString('en-US') + '만' + (chun ? ` ${chun}천` : '') : `${chun}천`;
+    if (!v) s = '0';
+    return (neg ? '-' : '') + s + '원';
+  }
+  const signed = v => (v > 0 ? '+' : '') + fmt(v);
+  const pickRand = a => a[Math.floor(Math.random() * a.length)];
+  function shuffled(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+  const G = { asia:'#d8413a', europe:'#e0a917', scenic:'#2f9e5b', metro:'#2a6fc9', korea:'#7d4bc0', ride:'#59636e' };
+  const city = (n, g, p, b, r) => ({ k:'city', n, g, p, b, r });
+  const place = (n, g, p, toll, extra = {}) => ({ k:'place', n, g, p, toll, ...extra });
+  const KEY = { k:'key', n:'황금열쇠' };
+  const AS = [50, 150, 250], EU = [100, 300, 500], SC = [150, 450, 750], ME = [200, 600, 1000];
+  const BOARD = [
+    { k:'start', n:'출발' },
+    city('타이베이', 'asia', 50, AS, [2, 10, 30, 90, 250]), KEY,
+    city('베이징', 'asia', 80, AS, [4, 20, 60, 180, 450]), city('마닐라', 'asia', 80, AS, [4, 20, 60, 180, 450]),
+    place('제주도', 'korea', 200, 300),
+    city('싱가포르', 'asia', 100, AS, [6, 30, 90, 270, 550]), KEY,
+    city('카이로', 'asia', 100, AS, [6, 30, 90, 270, 550]), city('이스탄불', 'asia', 120, AS, [8, 40, 100, 300, 600]),
+    { k:'island', n:'무인도' },
+    city('아테네', 'europe', 140, EU, [10, 50, 150, 450, 750]), KEY,
+    city('코펜하겐', 'europe', 160, EU, [12, 60, 180, 500, 900]), city('스톡홀름', 'europe', 160, EU, [12, 60, 180, 500, 900]),
+    place('콩코드 여객기', 'ride', 200, 300),
+    city('베른', 'europe', 180, EU, [14, 70, 200, 550, 950]), KEY,
+    city('베를린', 'europe', 180, EU, [14, 70, 200, 550, 950]), city('오타와', 'europe', 200, EU, [16, 80, 220, 600, 1000]),
+    { k:'fundget', n:'사회복지기금 수령' },
+    city('부에노스 아이레스', 'scenic', 220, SC, [18, 90, 250, 700, 1050]), KEY,
+    city('상파울루', 'scenic', 240, SC, [20, 100, 300, 750, 1100]), city('시드니', 'scenic', 240, SC, [20, 100, 300, 750, 1100]),
+    place('부산', 'korea', 500, 600),
+    city('하와이', 'scenic', 260, SC, [22, 110, 330, 800, 1150]), city('리스본', 'scenic', 260, SC, [22, 110, 330, 800, 1150]),
+    place('퀸 엘리자베스', 'ride', 300, 250),
+    city('마드리드', 'scenic', 280, SC, [24, 120, 360, 850, 1200]),
+    { k:'space', n:'우주여행' },
+    city('도쿄', 'metro', 300, ME, [26, 130, 390, 900, 1270]),
+    place('컬럼비아호', 'ride', 450, 400),
+    city('파리', 'metro', 320, ME, [28, 150, 450, 1000, 1400]), city('로마', 'metro', 320, ME, [28, 150, 450, 1000, 1400]), KEY,
+    city('런던', 'metro', 350, ME, [35, 170, 500, 1100, 1500]), city('뉴욕', 'metro', 350, ME, [35, 170, 500, 1100, 1500]),
+    { k:'fundpay', n:'사회복지기금 접수' },
+    place('서울', 'korea', 1000, 2000),
+  ];
+  const ISLAND = 10, FUND = 20, SPACE = 30, CONCORDE = 15, QUEEN = 28, COLUMBIA = 32, JEJU = 5, BUSAN = 25, SEOUL = 39;
+  const SALARY = 200, FUND_FEE = 150, RIDE_FEE = 200, START_CASH = 2930;
+  const COLORS = ['#e5383b', '#1f6fd1', '#159a6b', '#8a3fc7'];
+  const LV = ['', '별장 1채', '별장 2채', '빌딩', '호텔'];
+  const CARDS = [
+    ['flight', '항공여행', '콩코드 여객기를 타고 타이베이로 갑니다.'], ['cruise', '유람선 여행', '퀸 엘리자베스 호를 타고 베이징으로 갑니다.'],
+    ['start', '고속도로', '출발지로 갑니다. 월급도 받습니다.'], ['jeju', '관광여행', '제주도로 갑니다.'], ['busan', '관광여행', '부산으로 갑니다.'], ['seoul', '관광여행', '서울로 갑니다.'],
+    ['back2', '뒤로 가시오', '2칸 뒤로 갑니다.'], ['back3', '뒤로 가시오', '3칸 뒤로 갑니다.'], ['island', '무인도로 가시오', '곧바로 무인도로 갑니다. 월급은 없습니다.'],
+    ['fund', '기금 배당', '사회복지기금 수령처로 갑니다.'], ['tour', '세계일주', '한 바퀴 돌아 월급과 쌓인 기금을 받습니다.'],
+    ['space', '우주여행 초대', '우주여행 칸으로 갑니다. 다음 탑승은 무료입니다.'], ['space', '우주여행 초대', '우주여행 칸으로 갑니다. 다음 탑승은 무료입니다.'],
+    ['+300', '노벨 평화상', '상금을 받습니다.'], ['+50', '노후연금', '연금을 받습니다.'], ['+200', '복권 당첨', '당첨금을 받습니다.'], ['+100', '자동차 경주 우승', '상금을 받습니다.'], ['+100', '장학금', '장학금을 받습니다.'],
+    ['birthday', '생일 축하', '모든 플레이어에게 1만원씩 받습니다.'],
+    ['guard', '건물 방범비', '건물마다 방범비를 냅니다.'], ['repair', '건물 수리비', '건물마다 수리비를 냅니다.'], ['tax', '정기종합소득세', '건물마다 세금을 냅니다.'],
+    ['-50', '과속운전 벌금', '벌금을 냅니다.'], ['-50', '병원비', '병원비를 냅니다.'], ['-100', '해외유학', '유학비를 냅니다.'],
+    ['radio', '무인도 탈출 무전기', '무인도에서 곧바로 나올 수 있습니다. 보관합니다.'],
+    ['half', '반액대매출', '가장 비싼 땅을 은행에 반값으로 팝니다.'], ['half', '반액대매출', '가장 비싼 땅을 은행에 반값으로 팝니다.'],
+    ['pass', '우대권', '통행료를 1번 면제받습니다. 보관합니다.'], ['pass', '우대권', '통행료를 1번 면제받습니다. 보관합니다.'],
+  ];
+
+  /* ----- Board geometry ----- */
+  const SIZE = 1100, CORNER = 150, W = (SIZE - CORNER * 2) / 9, FAR = SIZE - CORNER;
+  function rectOf(i) {
+    if (i === 0) return [FAR, FAR, CORNER, CORNER, 'c'];
+    if (i < 10) return [FAR - i * W, FAR, W, CORNER, 'b'];
+    if (i === 10) return [0, FAR, CORNER, CORNER, 'c'];
+    if (i < 20) return [0, FAR - (i - 10) * W, CORNER, W, 'l'];
+    if (i === 20) return [0, 0, CORNER, CORNER, 'c'];
+    if (i < 30) return [CORNER + (i - 21) * W, 0, W, CORNER, 't'];
+    if (i === 30) return [FAR, 0, CORNER, CORNER, 'c'];
+    return [FAR, CORNER + (i - 31) * W, CORNER, W, 'r'];
+  }
+  const centre = i => { const [x, y, w, h] = rectOf(i); return [x + w / 2, y + h / 2]; };
+  function bandOf(i) {
+    const [x, y, w, h, s] = rectOf(i), T = 26;
+    return s === 'b' ? [x, y, w, T] : s === 't' ? [x, y + h - T, w, T] : s === 'l' ? [x + w - T, y, T, h] : s === 'r' ? [x, y, T, h] : null;
+  }
+  const cornerArt = {
+    start: (c, m) => `<path d="M${c - 44} ${m}H${c + 18}M${c + 18} ${m - 18}L${c + 44} ${m}L${c + 18} ${m + 18}Z" stroke="#c9302c" stroke-width="10" fill="#c9302c"/>`,
+    island: (c, m) => `<ellipse cx="${c}" cy="${m + 30}" rx="50" ry="14" fill="#ecd9a0"/><path d="M${c - 2} ${m + 28}Q${c - 6} ${m} ${c + 4} ${m - 22}" stroke="#7a5230" stroke-width="6" fill="none"/><path d="M${c + 4} ${m - 22}Q${c - 18} ${m - 34} ${c - 30} ${m - 14}M${c + 4} ${m - 22}Q${c + 22} ${m - 36} ${c + 34} ${m - 14}" stroke="#1f8a4e" stroke-width="8" fill="none" stroke-linecap="round"/>`,
+    fundget: (c, m) => `<circle cx="${c}" cy="${m - 4}" r="28" fill="#ffd64a" stroke="#a87a00" stroke-width="4"/><text x="${c}" y="${m + 6}" class="m-t" style="font-size:30px;fill:#7a5200">₩</text>`,
+    space: (c, m) => `<path d="M${c} ${m - 40}Q${c + 22} ${m - 10} ${c + 14} ${m + 22}H${c - 14}Q${c - 22} ${m - 10} ${c} ${m - 40}Z" fill="#e8eef5" stroke="#46556a" stroke-width="3"/><circle cx="${c}" cy="${m - 12}" r="7" fill="#57b6e6" stroke="#46556a" stroke-width="2"/><path d="M${c - 14} ${m + 6}L${c - 28} ${m + 28}L${c - 12} ${m + 22}ZM${c + 14} ${m + 6}L${c + 28} ${m + 28}L${c + 12} ${m + 22}Z" fill="#c9302c"/><path d="M${c - 6} ${m + 24}L${c} ${m + 42}L${c + 6} ${m + 24}Z" fill="#f2a31a"/>`,
+  };
+  function drawBoard() {
+    let s = `<rect width="${SIZE}" height="${SIZE}" fill="#f4eed9"/><rect x="${CORNER}" y="${CORNER}" width="${SIZE - 2 * CORNER}" height="${SIZE - 2 * CORNER}" fill="#cfe4c4"/>`;
+    const lands = ['M-92-40Q-60-92 2-82Q54-70 36-28Q6-8-22-16Q-70-4-92-40Z', 'M18 14Q70-4 84 40Q70 84 28 76Q0 50 18 14Z', 'M-70 28Q-44 14-30 42Q-44 74-66 60Z'];
+    s += `<g transform="translate(550 440)"><circle r="170" fill="#00000022" cy="10"/><circle r="168" fill="#2878c4"/><circle r="168" fill="url(#m-shine)"/><g transform="scale(1.7)" fill="#3fa55e">${lands.map(d => `<path d="${d}"/>`).join('')}</g></g>`;
+    s += `<defs><radialGradient id="m-shine" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff66"/><stop offset=".6" stop-color="#ffffff00"/><stop offset="1" stop-color="#00000044"/></radialGradient></defs>`;
+    s += `<text x="550" y="330" class="m-title">부루마불</text>`;
+    s += `<g transform="translate(350 760) rotate(-6)"><rect x="3" y="5" width="170" height="110" rx="10" fill="#0004"/><rect width="170" height="110" rx="10" fill="#f0bf2a" stroke="#8d6b00" stroke-width="3"/><rect x="8" y="8" width="154" height="94" rx="6" fill="none" stroke="#8d6b00" stroke-width="2"/><text x="85" y="66" class="m-t" style="font-size:26px;fill:#5a3d00">황금열쇠</text></g>`;
+    s += `<g transform="translate(590 760) rotate(4)"><rect x="3" y="5" width="170" height="110" rx="10" fill="#0004"/><rect width="170" height="110" rx="10" fill="#fff" stroke="#5a7a9c" stroke-width="3"/><text x="85" y="42" class="m-t" style="font-size:20px;fill:#2b4b6b">사회복지기금</text><text x="85" y="84" class="m-t" id="m-pot" style="font-size:26px;fill:#c9302c">0원</text></g>`;
+    BOARD.forEach((t, i) => {
+      const [x, y, w, h, side] = rectOf(i);
+      let g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${t.k === 'key' ? '#fbe9a6' : side === 'c' ? '#fbf7e8' : '#f9f5e6'}" stroke="#46402e" stroke-width="1.6"/>`;
+      const band = bandOf(i);
+      if (t.g && band) g += `<rect x="${band[0]}" y="${band[1]}" width="${band[2]}" height="${band[3]}" fill="${G[t.g]}" stroke="#46402e" stroke-width="1"/>`;
+      const cx = x + w / 2, cy = y + h / 2;
+      if (side === 'c') {
+        const art = cornerArt[t.k === 'fundget' ? 'fundget' : t.k];
+        const lines = t.k === 'fundget' ? ['사회복지기금', '수령'] : [t.n];
+        g += (art ? art(cx, cy - 14) : '') + lines.map((l, k) => `<text x="${cx}" y="${y + h - 16 - (lines.length - 1 - k) * 22}" class="m-t" style="font-size:${lines.length > 1 ? 19 : 24}px">${l}</text>`).join('');
+      } else {
+        const shift = side === 'b' ? 13 : side === 't' ? -13 : side === 'l' ? -13 : 13;
+        const tx = side === 'l' || side === 'r' ? cx + shift : cx;
+        const ty = side === 'b' || side === 't' ? cy + shift : cy;
+        const parts = t.k === 'fundpay' ? ['사회복지', '기금 접수'] : t.n.split(' ');
+        const words = parts.length > 1 ? parts : [t.n];
+        const size = Math.min(19, (side === 'l' || side === 'r' ? 112 : 80) / Math.max(...words.map(l => [...l].length)));
+        const price = t.p ? fmt(t.p) : t.k === 'fundpay' ? fmt(FUND_FEE) : '';
+        const allY = ty - (words.length - 1) * (size + 3) / 2 - (price ? 9 : 0);
+        if (t.k === 'key') g += `<g transform="translate(${tx} ${ty - 22})" fill="none" stroke="#a87a00" stroke-width="4"><circle r="9" cx="-9"/><path d="M0 0H20M14 0V8M20 0V8"/></g>`;
+        g += words.map((l, k) => `<text x="${tx}" y="${(t.k === 'key' ? ty + 16 : allY + k * (size + 3)) + 6}" class="m-t" style="font-size:${t.k === 'key' ? 15 : size.toFixed(1)}px">${esc(l)}</text>`).join('');
+        if (price) g += `<text x="${tx}" y="${ty + (words.length - 1) * (size + 3) / 2 + 22}" class="m-price">${price}</text>`;
+      }
+      s += `<g class="m-tile" id="mt${i}" data-i="${i}"><title>${esc(t.n)}${t.p ? ' · ' + fmt(t.p) : ''}</title>${g}</g>`;
+    });
+    s += '<g id="m-marks"></g><g id="m-pawns"></g>';
+    q('m-board').innerHTML = s;
+  }
+
+  /* ----- State ----- */
+  const blankU = () => ({ msg:'', event:null, choices:null, roll:null, pick:null, dice:[1, 1], diceSeq:0, hint:[] });
+  let S = null, U = blankU(), run = 0, pending = null, uiSeq = 0, paintedChoice = -1, appliedDice = 0, lastFollow = null, lFx = null;
+  const dieRot = [{ x:0, y:0 }, { x:0, y:0 }];
+  const ABORT = Symbol('abort');
+  function sleep(ms) {
+    const delay = reduced ? Math.min(ms, 160) : ms;
+    return new Promise(res => setTimeout(function chk() { view === 'marble' || Net.active ? res() : setTimeout(chk, 200); }, delay));
+  }
+  async function wait(ms) { const r = run; await sleep(ms); if (r !== run) throw ABORT; }
+  function save() { if (Net.active) return; try { localStorage.setItem('marble-game', JSON.stringify(S)); } catch {} }
+  const iControl = seat => !Net.active || Net.seat === seat;
+  function newGame(config, rounds) {
+    const cash = config.length === 2 ? START_CASH * 2 : START_CASH;
+    return {
+      players: config.map((c, i) => ({ name:c.name, cpu:c.cpu, color:COLORS[i], at:0, cash, out:false, island:0, space:false, spaceFree:false, radio:0, pass:0 })),
+      own:{}, deck:shuffled(CARDS.map((_, i) => i)), pot:0, turn:0, round:1, rounds, log:[], over:false, final:null,
+    };
+  }
+  const alive = () => S.players.filter(p => !p.out);
+  const seatOf = p => S.players.indexOf(p);
+  const landsOf = p => Object.keys(S.own).map(Number).filter(i => S.own[i].o === seatOf(p));
+  const wealth = p => p.cash + landsOf(p).reduce((a, i) => a + BOARD[i].p + S.own[i].inv, 0);
+  const tollOf = i => (BOARD[i].k === 'city' ? BOARD[i].r[S.own[i].lv] : BOARD[i].toll);
+  function log(text) { S.log.unshift(text); S.log.length = Math.min(S.log.length, 5); }
+
+  /* ----- Money: when short, buildings then land go back to the bank at cost ----- */
+  function sellBuilding(p, i, rate = 1) { const o = S.own[i], v = Math.round(o.inv * rate); p.cash += v; o.inv = 0; o.lv = 0; return v; }
+  function sellLand(p, i, rate = 1) { const v = Math.round(BOARD[i].p * rate); p.cash += v; delete S.own[i]; return v; }
+  function raise(p, need) {
+    const byPrice = () => landsOf(p).sort((a, b) => (BOARD[a].p + S.own[a].inv) - (BOARD[b].p + S.own[b].inv));
+    for (const i of byPrice()) { if (p.cash >= need) return; if (S.own[i].inv) { const v = sellBuilding(p, i); log(`${p.name}: ${BOARD[i].n} 건물 매각 ${signed(v)}`); } }
+    for (const i of byPrice()) { if (p.cash >= need) return; const v = sellLand(p, i); log(`${p.name}: ${BOARD[i].n} 땅 매각 ${signed(v)}`); }
+  }
+  function pay(p, amount, to) {
+    if (p.cash < amount) raise(p, amount);
+    if (p.cash < amount) {
+      if (to) to.cash += Math.max(0, p.cash);
+      else if (to === 'fund') S.pot += Math.max(0, p.cash);
+      p.cash = 0; p.out = true; p.island = 0; p.space = false;
+      log(`${p.name}: 파산했습니다.`);
+      return false;
+    }
+    p.cash -= amount;
+    if (to) to.cash += amount;
+    return true;
+  }
+
+  /* ----- Rendering ----- */
+  function renderMarks() {
+    let s = '';
+    Object.keys(S.own).map(Number).forEach(i => {
+      const o = S.own[i], [x, y, w, h, side] = rectOf(i), color = S.players[o.o].color, band = bandOf(i);
+      /* The owner's colour runs along the outer edge of the space. */
+      const edge = side === 'b' ? [x, y + h - 12, w, 12] : side === 't' ? [x, y, w, 12] : side === 'l' ? [x, y, 12, h] : [x + w - 12, y, 12, h];
+      s += `<rect x="${edge[0]}" y="${edge[1]}" width="${edge[2]}" height="${edge[3]}" fill="${color}" stroke="#0006"/>`;
+      if (o.lv && band) {
+        const bx = band[0] + band[2] / 2, by = band[1] + band[3] / 2;
+        if (o.lv <= 2) for (let k = 0; k < o.lv; k++) { const ox = bx + (o.lv === 2 ? (k ? 13 : -13) : 0); s += `<path d="M${ox - 10} ${by + 9}V${by - 2}L${ox} ${by - 11}L${ox + 10} ${by - 2}V${by + 9}Z" fill="#2fbf6b" stroke="#fff" stroke-width="2"/>`; }
+        else if (o.lv === 3) s += `<rect x="${bx - 10}" y="${by - 12}" width="20" height="24" fill="#2a74c9" stroke="#fff" stroke-width="2"/>`;
+        else s += `<rect x="${bx - 22}" y="${by - 12}" width="44" height="24" rx="3" fill="#d8413a" stroke="#fff" stroke-width="2"/><text x="${bx}" y="${by + 6}" class="m-t" style="font-size:16px;fill:#fff">H</text>`;
+      }
+    });
+    q('m-marks').innerHTML = s;
+  }
+  function renderPawns() {
+    const dx = [-24, 24, -24, 24], dy = [-20, -20, 22, 22], box = q('m-pawns');
+    S.players.forEach((p, i) => {
+      let g = q('mpawn' + i);
+      if (!g) {
+        g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.id = 'mpawn' + i; g.setAttribute('class', 'pawn m-pawn');
+        g.innerHTML = `<ellipse cx="2" cy="19" rx="17" ry="6" fill="#0006"/><path d="M-13 18Q-9 0-6-6H6Q9 0 13 18Z" fill="${p.color}" stroke="#0009" stroke-width="2"/><circle cy="-13" r="10" fill="${p.color}" stroke="#0009" stroke-width="2"/><circle cx="-3" cy="-16" r="3" fill="#fff8"/>`;
+        box.appendChild(g);
+      }
+      const [x, y] = centre(p.at);
+      g.style.transform = `translate(${x + dx[i]}px, ${y + dy[i]}px)`;
+      g.style.display = p.out ? 'none' : '';
+      g.classList.toggle('active', !S.over && S.turn === i);
+    });
+    for (let i = S.players.length; i < 4; i++) q('mpawn' + i)?.remove();
+  }
+  function followPawn(p, smooth = true) {
+    const box = q('m-boardbox');
+    if (box.scrollWidth <= box.clientWidth && box.scrollHeight <= box.clientHeight) return;
+    const scale = box.scrollWidth / SIZE, [cx, cy] = centre(p.at);
+    box.scrollTo({ left: cx * scale - box.clientWidth / 2, top: cy * scale - box.clientHeight / 2, behavior: smooth && !reduced ? 'smooth' : 'auto' });
+  }
+  function renderNotes(cash) {
+    let left = Math.max(0, cash), html = '', count = 0;
+    const list = [];
+    for (const [v, c, label] of [[500, 'n3', '50만'], [100, 'n2', '10만'], [50, 'n1', '5만'], [10, 'n0', '1만']]) { while (left >= v && list.length < 7) { list.push([c, label]); left -= v; } }
+    list.forEach(([c, label], i) => { html += `<span class="note ${c}" style="left:${i * 11}px;top:${4 + (i % 2) * 7}px;transform:rotate(${-5 + (i * 3) % 9}deg)">${label}</span>`; count = i; });
+    return `<div class="notes" style="width:${list.length ? 70 + count * 11 : 0}px" aria-hidden="true">${html}</div>`;
+  }
+  function renderPlayers() {
+    q('m-players').innerHTML = S.players.map((p, i) => {
+      const deeds = landsOf(p).sort((a, b) => a - b).map(k => {
+        const t = BOARD[k], o = S.own[k];
+        return `<span class="m-deed" style="--c:${G[t.g]}" title="${esc(t.n)}${o.lv ? ' · ' + LV[o.lv] : ''}"><b>${esc(t.n.split(' ')[0])}</b>${o.lv ? `<em>${['', '별1', '별2', '빌', '호'][o.lv]}</em>` : ''}</span>`;
+      }).join('');
+      const extra = [];
+      if (p.radio) extra.push(`<div class="tcard ins"><b>무전기</b>${p.radio}장</div>`);
+      if (p.pass) extra.push(`<div class="tcard stock"><b>우대권</b>${p.pass}장</div>`);
+      const me = Net.active && Net.seat === i ? ' (나)' : '';
+      const state = p.out ? ' · 파산' : p.island ? ` · 무인도 ${p.island}턴` : p.space ? ' · 우주선 대기' : '';
+      return `<article class="l-card${!S.over && S.turn === i ? ' now' : ''}${p.out ? ' m-out' : ''}"><header><span class="l-chip" style="background:${p.color}"></span><h3>${esc(p.name + me + state)}</h3><span class="l-cash">${fmt(p.cash)}</span></header><div class="belong">${renderNotes(p.cash)}${extra.join('')}</div><div class="m-deeds">${deeds || '<span class="l-line">아직 산 땅이 없습니다.</span>'}</div></article>`;
+    }).join('');
+  }
+  function renderDice() {
+    if (U.diceSeq === appliedDice) return;
+    appliedDice = U.diceSeq;
+    U.dice.forEach((v, i) => {
+      const [tx, ty] = TARGET[v], r = dieRot[i], el = q('mcube' + i);
+      r.x = Math.ceil(r.x / 360) * 360 + 720 + tx;
+      r.y = Math.ceil(r.y / 360) * 360 + 360 + ty;
+      el.style.transform = `rotateX(${r.x}deg) rotateY(${r.y}deg)`;
+      el.closest('.mdie').classList.remove('rolling'); void el.getBoundingClientRect(); el.closest('.mdie').classList.add('rolling');
+    });
+    for (let k = 0; k < 5; k++) clack(k * .08 + Math.random() * .03, .3 - k * .04);
+  }
+  function renderChoices() {
+    const c = U.choices, key = c ? c.seq : -1;
+    if (key === paintedChoice) return;
+    paintedChoice = key;
+    const box = q('m-choices');
+    box.innerHTML = '';
+    if (!c || !iControl(c.seat)) return;
+    c.opts.forEach((o, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'l-choice'; b.disabled = !!o.disabled; b.dataset.i = i;
+      b.innerHTML = `<span>${esc(o.label)}</span>${o.sub ? `<small>${esc(o.sub)}</small>` : ''}`;
+      box.appendChild(b);
+    });
+    box.querySelector('button:not(:disabled)')?.focus({ preventScroll:true });
+  }
+  function renderFinal() {
+    const f = S.final, top = f[0].total, winners = f.filter(r => r.total === top).map(r => r.name);
+    q('m-msg').textContent = winners.length > 1 ? '무승부입니다.' : `${winners[0]} 승리! 총재산 ${fmt(top)}`;
+    const box = q('m-event');
+    box.style.display = 'block';
+    box.innerHTML = `<table><thead><tr><th>이름</th><th>현금</th><th>땅·건물</th><th>합계</th></tr></thead><tbody>${f.map((r, i) => `<tr class="${r.total === top ? 'win' : ''}"><td data-rank="${i + 1}">${esc(r.name)}${r.out ? ' (파산)' : ''}</td><td>${fmt(r.cash)}</td><td>${fmt(r.land)}</td><td>${fmt(r.total)}</td></tr>`).join('')}</tbody></table>`;
+  }
+  function paint() {
+    if (!S) return;
+    const turnP = S.players[S.turn];
+    q('m-who').textContent = S.over ? '게임 종료' : turnP.name === '나' ? '내 차례' : `${turnP.name} 차례`;
+    q('m-age').textContent = S.over ? '' : `${S.round}${S.rounds ? ' / ' + S.rounds : ''} 라운드`;
+    q('m-msg').textContent = U.msg;
+    q('m-panel').classList.toggle('l-final', S.over);
+    q('m-pot').textContent = fmt(S.pot);
+    if (S.over) renderFinal();
+    else {
+      const box = q('m-event');
+      box.style.display = '';
+      if (!U.event) box.innerHTML = '<span style="color:#6b6b60">아직 일어난 일이 없습니다.</span>';
+      else { const [title, text, delta] = U.event; box.innerHTML = `<span><b>${esc(title)}</b> ${esc(text || '')}</span>${delta ? `<span class="delta ${delta > 0 ? 'up' : 'down'}">${esc(signed(delta))}</span>` : ''}`; }
+    }
+    renderMarks(); renderPawns(); renderPlayers(); renderDice(); renderChoices();
+    q('m-log').innerHTML = S.log.map(t => `<li>${esc(t)}</li>`).join('');
+    document.querySelectorAll('.m-tile.hint').forEach(t => t.classList.remove('hint'));
+    (U.hint || []).forEach(i => q('mt' + i)?.classList.add('hint'));
+    q('m-boardwrap').classList.toggle('picking', U.pick !== null && iControl(U.pick));
+    const btn = q('m-roll');
+    if (S.over) { const guest = Net.role === 'guest'; btn.textContent = guest ? '방장을 기다리는 중' : '한 판 더'; btn.disabled = guest; }
+    else { btn.textContent = '주사위 굴리기'; btn.disabled = !(U.roll !== null && iControl(U.roll)); }
+    q('m-trayhint').classList.toggle('mine', !S.over && U.roll !== null && iControl(U.roll));
+    const key = S.turn + ':' + turnP.at;
+    if (key !== lastFollow) { if (lastFollow && lastFollow.split(':')[0] === String(S.turn)) clack(0, .1); followPawn(turnP); lastFollow = key; }
+    if (Net.role === 'host') netBroadcastState({ t:'marble', S, U });
+    fx();
+  }
+  function fx() {
+    const ev = JSON.stringify(U.event), sig = { turn:S.turn, over:S.over, ev }, prev = lFx;
+    lFx = sig;
+    if (!prev || view !== 'marble') return;
+    if (ev !== prev.ev && U.event) {
+      const box = q('m-event');
+      box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
+      const d = U.event[2];
+      if (d) { FX.float(q('mpawn' + S.turn), signed(d), d > 0 ? 'up' : 'down'); if (d > 0) FX.coin(); else FX.bad(); }
+    }
+    if (S.over && !prev.over) {
+      const top = S.final[0].total, winners = S.final.filter(r => r.total === top).map(r => r.name);
+      const iWon = Net.active ? winners.includes(S.players[Net.seat]?.name) : S.players.some(p => !p.cpu && winners.includes(p.name));
+      if (iWon) { FX.confetti(); FX.win(); } else FX.lose();
+    } else if (!S.over && S.turn !== prev.turn) {
+      const a = S.players[S.turn], mine = Net.active ? S.turn === Net.seat : !a.cpu;
+      FX.banner(mine && (Net.active || a.name === '나') ? '내 차례!' : `${a.name} 차례`, mine);
+    }
+  }
+  function setMsg(t) { U.msg = t; paint(); }
+
+  /* ----- Input ----- */
+  function send(m) { if (Net.role === 'guest') netSendAct(m); else act(Net.active ? Net.seat : null, m); }
+  function act(seat, m) {
+    if (!S || S.over || !m || !pending) return;
+    if (seat !== null && seat !== pending.seat) return;
+    if (m.a === 'choice' && pending.kind === 'choice') { const o = pending.opts[m.i]; if (o && !o.disabled) pending.resolve(o); }
+    else if (m.a === 'roll' && pending.kind === 'roll') pending.resolve();
+    else if (m.a === 'tile' && pending.kind === 'tile' && Number.isInteger(m.i) && m.i >= 0 && m.i < 40 && m.i !== SPACE) pending.resolve(m.i);
+  }
+  function seatChange(seat, cpu) {
+    if (!S || !S.players[seat]) return;
+    S.players[seat].cpu = cpu;
+    if (cpu && pending && pending.seat === seat) {
+      if (pending.kind === 'choice') pending.resolve(pending.cpuPick(pending.opts));
+      else if (pending.kind === 'tile') pending.resolve(cpuDestination(S.players[seat]));
+      else pending.resolve();
+    }
+    paint();
+  }
+  async function ask(p, question, options, cpuPick) {
+    setMsg(question);
+    if (p.cpu) { await wait(800); return cpuPick(options); }
+    const r = run;
+    const value = await new Promise(resolve => {
+      pending = { kind:'choice', seat:seatOf(p), opts:options, cpuPick, resolve };
+      U.choices = { seq:++uiSeq, seat:seatOf(p), opts:options.map(o => ({ label:o.label, sub:o.sub || '', disabled:!!o.disabled })) };
+      paint();
+    });
+    if (r !== run) throw ABORT;
+    pending = null; U.choices = null;
+    paint();
+    return value;
+  }
+  async function announce(p, title, text, delta = 0) {
+    U.event = [title, text || '', delta || 0];
+    log(`${p.name}: ${title}${delta ? ' ' + signed(delta) : ''}`);
+    paint();
+    await wait(p.cpu ? 1000 : 850);
+  }
+  async function rollDice(p, prompt) {
+    setMsg(prompt);
+    if (!p.cpu) {
+      const r = run;
+      await new Promise(resolve => { pending = { kind:'roll', seat:seatOf(p), resolve }; U.roll = seatOf(p); paint(); });
+      if (r !== run) throw ABORT;
+      pending = null; U.roll = null;
+    } else await wait(600);
+    const a = 1 + Math.floor(Math.random() * 6), b = 1 + Math.floor(Math.random() * 6);
+    U.dice = [a, b]; U.diceSeq++;
+    paint();
+    await wait(800);
+    return [a, b];
+  }
+
+  /* ----- Movement ----- */
+  async function steps(p, n) {
+    for (let k = 0; k < n; k++) {
+      p.at = (p.at + 1) % 40;
+      if (p.at === 0) { p.cash += SALARY; U.event = ['월급', '출발지를 지나 월급을 받았습니다.', SALARY]; log(`${p.name}: 월급 ${signed(SALARY)}`); }
+      paint();
+      await wait(170);
+    }
+  }
+  const forwardTo = (p, dest) => steps(p, (dest - p.at + 40) % 40 || 40);
+
+  /* ----- Spaces ----- */
+  async function land(p, extra = {}) {
+    const i = p.at, t = BOARD[i];
+    if (t.k === 'city' || t.k === 'place') {
+      const o = S.own[i];
+      if (!o) return buy(p, i);
+      if (o.o === seatOf(p)) return build(p, i);
+      return toll(p, i);
+    }
+    if (t.k === 'key') return drawCard(p);
+    if (t.k === 'island') { p.island = 3; return announce(p, '무인도', '3턴 동안 머뭅니다. 더블이 나오면 빠져나옵니다.'); }
+    if (t.k === 'fundget') { const v = S.pot; S.pot = 0; p.cash += v; return announce(p, '사회복지기금', v ? '쌓인 기금을 모두 받았습니다.' : '쌓인 기금이 없습니다.', v); }
+    if (t.k === 'fundpay') { const ok = pay(p, FUND_FEE, null); if (ok) S.pot += FUND_FEE; return announce(p, '사회복지기금 접수', '기금을 냈습니다.', -FUND_FEE); }
+    if (t.k === 'space') { p.space = true; return announce(p, '우주여행', '다음 차례에 원하는 곳으로 갈 수 있습니다.'); }
+  }
+  async function buy(p, i) {
+    const t = BOARD[i];
+    const sel = await ask(p, `${p.name}: ${t.n}을(를) 살까요? (${fmt(t.p)})`, [
+      { label:'구입', sub:`통행료 ${fmt(t.k === 'city' ? t.r[0] : t.toll)}부터`, value:true, disabled:p.cash < t.p },
+      { label:'사지 않음', value:false },
+    ], o => (p.cash - t.p >= 300 ? o[0] : o[1]));
+    if (!sel.value) return announce(p, t.n, '사지 않고 지나갑니다.');
+    p.cash -= t.p;
+    S.own[i] = { o:seatOf(p), lv:0, inv:0 };
+    return announce(p, `${t.n} 구입`, '이제 내 땅입니다.', -t.p);
+  }
+  async function build(p, i) {
+    const t = BOARD[i], o = S.own[i];
+    if (t.k !== 'city' || o.lv === 4) return announce(p, t.n, '내 땅에 도착했습니다.');
+    const costs = [0, t.b[0], t.b[0] * 2, t.b[1], t.b[2]];
+    const opts = [1, 2, 3, 4].filter(lv => lv > o.lv && !(lv === 2 && o.lv < 1 && false)).map(lv => {
+      const c = costs[lv] - o.inv;
+      return { label:LV[lv], sub:`${fmt(Math.max(0, c))} · 통행료 ${fmt(t.r[lv])}`, value:lv, cost:Math.max(0, c), disabled:p.cash < Math.max(0, c) };
+    });
+    opts.push({ label:'짓지 않음', value:0, cost:0 });
+    const sel = await ask(p, `${p.name}: ${t.n}에 건물을 지을까요?`, opts, list => {
+      const can = list.filter(x => x.value && p.cash - x.cost >= 400);
+      return can.length ? can[can.length - 1] : list[list.length - 1];
+    });
+    if (!sel.value) return announce(p, t.n, '건물을 짓지 않았습니다.');
+    p.cash -= sel.cost;
+    o.lv = sel.value; o.inv += sel.cost;
+    return announce(p, `${t.n}에 ${LV[o.lv]} 건설`, '', -sel.cost);
+  }
+  async function toll(p, i) {
+    const t = BOARD[i], o = S.own[i], owner = S.players[o.o], amount = tollOf(i);
+    if (p.pass) {
+      const sel = await ask(p, `${p.name}: 통행료 ${fmt(amount)}. 우대권을 쓸까요?`, [{ label:'우대권 사용', value:true }, { label:'통행료 내기', value:false }], l => (amount >= 100 ? l[0] : l[1]));
+      if (sel.value) { p.pass--; returnCard('pass'); return announce(p, '우대권 사용', `${t.n} 통행료를 면제받았습니다.`); }
+    }
+    const ok = pay(p, amount, owner);
+    return announce(p, `${t.n} 통행료`, ok ? `${owner.name}에게 냅니다.` : `${owner.name}에게 내지 못해 파산했습니다.`, -amount);
+  }
+  function returnCard(kind) { const i = CARDS.findIndex((c, k) => c[0] === kind && !S.deck.includes(k)); if (i >= 0) S.deck.push(i); }
+  function buildingBill(p, hotel, bld, villa) {
+    return landsOf(p).reduce((a, i) => { const lv = S.own[i].lv; return a + (lv === 4 ? hotel : lv === 3 ? bld : lv === 2 ? villa * 2 : lv === 1 ? villa : 0); }, 0);
+  }
+  async function drawCard(p) {
+    const id = S.deck.shift(), [kind, title, text] = CARDS[id];
+    if (kind !== 'radio' && kind !== 'pass') S.deck.push(id);
+    U.event = ['황금열쇠: ' + title, text, 0];
+    log(`${p.name}: 황금열쇠 · ${title}`);
+    paint();
+    await wait(p.cpu ? 1300 : 1500);
+    if (/^[+-]\d+$/.test(kind)) {
+      const v = +kind;
+      if (v > 0) p.cash += v; else pay(p, -v, null);
+      return announce(p, title, text, v);
+    }
+    switch (kind) {
+      case 'flight': await forwardTo(p, CONCORDE); if (S.own[CONCORDE] && S.own[CONCORDE].o !== seatOf(p)) await toll(p, CONCORDE); if (p.out) return; await forwardTo(p, 1); return land(p);
+      case 'cruise': await forwardTo(p, QUEEN); if (S.own[QUEEN] && S.own[QUEEN].o !== seatOf(p)) await toll(p, QUEEN); if (p.out) return; await forwardTo(p, 3); return land(p);
+      case 'start': await forwardTo(p, 0); return;
+      case 'jeju': await forwardTo(p, JEJU); return land(p);
+      case 'busan': await forwardTo(p, BUSAN); return land(p);
+      case 'seoul': await forwardTo(p, SEOUL); return land(p);
+      case 'back2': p.at = (p.at + 38) % 40; paint(); await wait(300); return land(p);
+      case 'back3': p.at = (p.at + 37) % 40; paint(); await wait(300); return land(p);
+      case 'island': p.at = ISLAND; p.island = 3; paint(); return announce(p, '무인도', '3턴 동안 머뭅니다.');
+      case 'fund': await forwardTo(p, FUND); return land(p);
+      case 'tour': { const v = S.pot; S.pot = 0; p.cash += SALARY + v; return announce(p, title, '월급과 기금을 받았습니다.', SALARY + v); }
+      case 'space': await forwardTo(p, SPACE); p.space = true; p.spaceFree = true; return announce(p, '우주여행', '다음 차례에 무료로 탑승합니다.');
+      case 'birthday': { let got = 0; alive().filter(x => x !== p).forEach(x => { if (x.cash >= 10 || landsOf(x).length) { pay(x, 10, p); got += 10; } }); return announce(p, title, '친구들이 축하금을 줬습니다.', got); }
+      case 'guard': { const v = buildingBill(p, 50, 30, 10); pay(p, v, null); return announce(p, title, v ? text : '건물이 없어 낼 돈이 없습니다.', -v); }
+      case 'repair': { const v = buildingBill(p, 100, 60, 30); pay(p, v, null); return announce(p, title, v ? text : '건물이 없어 낼 돈이 없습니다.', -v); }
+      case 'tax': { const v = buildingBill(p, 150, 100, 50); pay(p, v, null); return announce(p, title, v ? text : '건물이 없어 낼 돈이 없습니다.', -v); }
+      case 'radio': p.radio++; return announce(p, title, '무전기를 보관합니다.');
+      case 'pass': p.pass++; return announce(p, title, '우대권을 보관합니다.');
+      case 'half': {
+        const list = landsOf(p).sort((a, b) => (BOARD[b].p + S.own[b].inv) - (BOARD[a].p + S.own[a].inv));
+        if (!list.length) return announce(p, title, '가진 땅이 없습니다.');
+        const i = list[0], n = BOARD[i].n;
+        let v = sellBuilding(p, i, .5); v += sellLand(p, i, .5);
+        return announce(p, title, `${n}을(를) 반값에 팔았습니다.`, v);
+      }
+    }
+  }
+  function cpuDestination(p) {
+    const open = BOARD.map((t, i) => i).filter(i => (BOARD[i].k === 'city' || BOARD[i].k === 'place') && !S.own[i] && BOARD[i].p + 300 <= p.cash);
+    if (open.length) return open.sort((a, b) => BOARD[b].p - BOARD[a].p)[0];
+    const mine = landsOf(p).filter(i => BOARD[i].k === 'city' && S.own[i].lv < 4);
+    return mine[0] ?? 0;
+  }
+
+  /* ----- Turn loop ----- */
+  async function takeTurn(p) {
+    paint();
+    if (p.space) {
+      const owner = S.own[COLUMBIA] ? S.players[S.own[COLUMBIA].o] : null;
+      const fee = p.spaceFree || !owner || owner === p || owner.out ? 0 : RIDE_FEE;
+      const sel = await ask(p, `${p.name}: 우주선을 타고 원하는 곳으로 갈까요?`, [
+        { label:'우주선 타기', sub:fee ? `컬럼비아호 이용료 ${fmt(fee)}` : '무료', value:true, disabled:p.cash < fee },
+        { label:'주사위 굴리기', value:false },
+      ], o => (p.cash >= fee + 300 ? o[0] : o[1]));
+      p.space = false; p.spaceFree = false;
+      if (sel.value) {
+        if (fee) { pay(p, fee, owner); await announce(p, '컬럼비아호 이용료', `${owner.name}에게 냅니다.`, -fee); if (p.out) return; }
+        let dest;
+        setMsg(`${p.name}: 말판에서 가고 싶은 칸을 누르세요.`);
+        if (p.cpu) { await wait(900); dest = cpuDestination(p); }
+        else {
+          const r = run;
+          dest = await new Promise(resolve => { pending = { kind:'tile', seat:seatOf(p), resolve }; U.pick = seatOf(p); paint(); });
+          if (r !== run) throw ABORT;
+          pending = null; U.pick = null;
+        }
+        U.hint = [dest];
+        await forwardTo(p, dest);
+        U.hint = [];
+        await land(p);
+        return;
+      }
+    }
+    if (p.island > 0) {
+      if (p.radio) {
+        const sel = await ask(p, `${p.name}: 무전기로 무인도를 나갈까요?`, [{ label:'무전기 사용', value:true }, { label:'주사위 굴리기', value:false }], o => o[0]);
+        if (sel.value) { p.radio--; returnCard('radio'); p.island = 0; await announce(p, '무전기 사용', '구조되었습니다.'); }
+      }
+      if (p.island > 0) {
+        const [a, b] = await rollDice(p, `${p.name}: 무인도 ${p.island}턴 남음. 더블이 나오면 빠져나옵니다.`);
+        if (a === b) {
+          p.island = 0;
+          await announce(p, '무인도 탈출', `더블 ${a}!`);
+          await steps(p, a + b);
+          await land(p);
+          return;
+        }
+        p.island--;
+        await announce(p, '무인도', p.island ? `${p.island}턴 더 머뭅니다.` : '다음 차례에는 나갈 수 있습니다.');
+        return;
+      }
+    }
+    let again = true;
+    while (again && !p.out && !p.island && !p.space) {
+      const [a, b] = await rollDice(p, p.cpu ? `${p.name}이(가) 주사위를 굴립니다.` : `${p.name}: 주사위를 굴리세요.`);
+      again = a === b;
+      setMsg(`${p.name}: ${a + b}칸 이동합니다.${again ? ' 더블!' : ''}`);
+      await steps(p, a + b);
+      await land(p);
+      if (alive().length <= 1) return;
+      if (again && !p.out && !p.island && !p.space) await announce(p, '더블', '한 번 더 굴립니다.');
+    }
+  }
+  async function loop() {
+    const mine = run;
+    try {
+      paint();
+      while (!S.over) {
+        save();
+        const p = S.players[S.turn];
+        if (!p.out) await takeTurn(p);
+        if (mine !== run) return;
+        if (alive().length <= 1) { finish(); return; }
+        let next = S.turn;
+        do { next = (next + 1) % S.players.length; if (next === 0) S.round++; } while (S.players[next].out);
+        S.turn = next;
+        if (S.rounds && S.round > S.rounds) { S.round = S.rounds; finish(); return; }
+      }
+    } catch (e) { if (e !== ABORT) throw e; }
+  }
+  function finish() {
+    S.over = true;
+    S.final = S.players.map(p => { const w = wealth(p); return { name:p.name, cash:p.cash, land:w - p.cash, total:w, out:p.out }; }).sort((a, b) => b.total - a.total);
+    U.choices = null; U.roll = null; U.pick = null; U.hint = [];
+    save();
+    paint();
+  }
+  function resetView() { q('m-pawns').innerHTML = ''; q('m-choices').innerHTML = ''; paintedChoice = -1; lastFollow = null; lFx = null; }
+  function begin(config, rounds = 25) {
+    run++;
+    pending = null;
+    U = blankU(); U.diceSeq = appliedDice;
+    S = newGame(config, rounds);
+    resetView();
+    loop();
+  }
+  function applyRemote(s, u) { S = s; U = u; paint(); }
+  function enterRoom() { run++; pending = null; S = null; q('m-pawns').innerHTML = ''; paintedChoice = -1; lFx = null; lastFollow = null; }
+
+  /* ----- Setup ----- */
+  let setupConfig = [{ name:'나', cpu:false }, { name:'컴퓨터 1', cpu:true }, { name:'컴퓨터 2', cpu:true }, { name:'컴퓨터 3', cpu:true }];
+  const setupCount = () => +document.querySelector('input[name="m-count"]:checked').value;
+  function renderSetup() {
+    q('m-setup-rows').innerHTML = setupConfig.slice(0, setupCount()).map((c, i) => `<div class="l-row"><input type="text" id="m-n${i}" maxlength="8" aria-label="플레이어 ${i + 1} 이름" value="${esc(c.name)}"><select id="m-k${i}" aria-label="플레이어 ${i + 1} 종류"><option value="h"${c.cpu ? '' : ' selected'}>사람</option><option value="c"${c.cpu ? ' selected' : ''}>컴퓨터</option></select></div>`).join('');
+  }
+  function readRows() { setupConfig.forEach((c, i) => { if (q('m-n' + i)) setupConfig[i] = { name:q('m-n' + i).value, cpu:q('m-k' + i).value === 'c' }; }); }
+  function openSetup(finished) { q('m-setup-warn').hidden = finished || !S || S.over; renderSetup(); q('m-setup').showModal(); }
+  function syncSound() { q('m-sound').textContent = soundOn ? '소리 켜짐' : '소리 꺼짐'; q('m-sound').setAttribute('aria-pressed', soundOn); }
+  function bindEvents() {
+    const roll = () => { if (!S) return; if (S.over) { if (Net.active) netRestart(); else openSetup(true); return; } if (!q('m-roll').disabled) send({ a:'roll' }); };
+    q('m-roll').addEventListener('click', roll);
+    q('m-trayhint').addEventListener('click', () => { if (S && !S.over) roll(); });
+    q('m-choices').addEventListener('click', e => { const b = e.target.closest('button'); if (b) send({ a:'choice', i:+b.dataset.i }); });
+    q('m-board').addEventListener('click', e => {
+      const t = e.target.closest('.m-tile');
+      if (t && S && !S.over && U.pick !== null && iControl(U.pick)) send({ a:'tile', i:+t.dataset.i });
+    });
+    q('m-new').addEventListener('click', () => openSetup(false));
+    q('m-sound').addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('yacht-sound', JSON.stringify(soundOn)); } catch {} syncSound(); });
+    document.querySelectorAll('input[name="m-count"]').forEach(r => r.addEventListener('change', () => { readRows(); renderSetup(); }));
+    q('m-setup-no').addEventListener('click', () => q('m-setup').close());
+    q('m-form').addEventListener('submit', e => {
+      e.preventDefault();
+      readRows();
+      const n = setupCount(), cfg = setupConfig.slice(0, n).map((c, i) => ({ name:cleanName(c.name) || `플레이어 ${i + 1}`, cpu:c.cpu }));
+      cfg.forEach((c, i) => { if (cfg.findIndex(o => o.name === c.name) !== i) c.name = `${c.name.slice(0, 6)} ${i + 1}`; });
+      const rounds = +q('m-rounds').value;
+      q('m-setup').close();
+      begin(cfg, rounds);
+    });
+    document.addEventListener('keydown', e => {
+      if (view !== 'marble' || q('m-setup').open || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.code === 'Space' && !/^(BUTTON|INPUT|SELECT|A)$/.test(e.target.tagName)) { e.preventDefault(); if (!q('m-roll').disabled) q('m-roll').click(); }
+    });
+  }
+  function boot() {
+    q('m-dice').innerHTML = [0, 1].map(i => `<div class="mdie"><span class="hop"><span class="cube" id="mcube${i}"><span class="core a"></span><span class="core b"></span>${[1, 2, 3, 4, 5, 6].map(faceHTML).join('')}</span></span></div>`).join('');
+    drawBoard(); bindEvents(); syncSound();
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem('marble-game')); } catch {}
+    if (saved && saved.players && saved.own) { S = saved; resetView(); if (S.over) paint(); else loop(); }
+    else begin(setupConfig.slice(0, 3));
+  }
+  return {
+    boot, act, seatChange, applyRemote, enterRoom,
+    startOnline: begin,
+    onShow() { syncSound(); if (S && !S.over) followPawn(S.players[S.turn], false); },
+    board: BOARD,
+    get state() { return S; },
+  };
+})();
+
 /* ---------- Game index ---------- */
 function route(forced) {
   const hash = location.hash.replace('#', '');
   const roomHash = hash.startsWith('room=') ? hash.slice(5).toUpperCase().replace(/[^A-Z0-9]/g, '') : '';
-  let next = forced || (['home', 'life', 'yacht', 'online'].includes(hash) ? hash : roomHash ? 'online' : 'home');
+  let next = forced || (['home', 'life', 'yacht', 'marble', 'online'].includes(hash) ? hash : roomHash ? 'online' : 'home');
   if (Net.active) next = Net.started ? Net.game : 'online';
   else if (roomHash) $('n-join-code').value = roomHash;
   view = next;
   $('view-yacht').hidden = next !== 'yacht';
   $('view-life').hidden = next !== 'life';
   $('view-online').hidden = next !== 'online';
+  $('view-marble').hidden = next !== 'marble';
   $('view-home').hidden = next !== 'home';
   document.body.classList.toggle('home-mode', next === 'home');
-  $('now-title').textContent = { yacht:'야추 다이스', life:'인생게임', online:'온라인 대전' }[next] || '';
+  $('now-title').textContent = { yacht:'야추 다이스', life:'인생게임', marble:'부루마불', online:'온라인 대전' }[next] || '';
   if (next === 'home') {
     try {
       const y = JSON.parse(localStorage.getItem('yacht-game'));
       $('play-yacht').textContent = y && !y.over && y.players.some(p => Object.keys(p.scores).length) ? '이어하기' : '플레이';
       const l = JSON.parse(localStorage.getItem('life-game'));
       $('play-life').textContent = l && !l.over && l.players.some(p => p.path) ? '이어하기' : '플레이';
+      const m = JSON.parse(localStorage.getItem('marble-game'));
+      $('play-marble').textContent = m && !m.over && (m.round > 1 || Object.keys(m.own).length) ? '이어하기' : '플레이';
     } catch {}
   }
-  if (next === 'life') Life.onShow(); else if (next === 'yacht' && state) render();
+  if (next === 'life') Life.onShow(); else if (next === 'marble') Marble.onShow(); else if (next === 'yacht' && state) render();
 }
 window.addEventListener('hashchange', () => route());
 document.querySelectorAll('.index a, .box').forEach(a => a.addEventListener('click', e => {
@@ -3142,6 +3898,7 @@ function start(data) {
   }
   requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.remove('no-anim')));
   Life.boot(data && data.life);
+  Marble.boot();
   bindOnline();
   route(); renderRoom();
   let session = null;
