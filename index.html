@@ -7,7 +7,7 @@
 <title>야추 다이스 & 인생게임</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gaegu:wght@400;700&family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: a teak-rimmed dice tray beside a ship's-log scorecard; on phones the tray sticks above the card. */
 :root {
@@ -667,6 +667,181 @@ tr.total .cell { font-size: 1.6rem; color: var(--signal); }
   .box, .art-wheel, .btn, .roll { transition: none; }
 }
 
+/* ---------- Tabletop: real objects on a walnut table ---------- */
+:root {
+  --deck: #4a2e19; --dot: transparent; --panel: #2c1d12; --ink: #fbf3e3; --muted: #d8c8ad; --line: #604a33;
+  --row-hover: #3d2a1b; --col-active: #4a3a18; --outline: #160c05;
+  --paper: #f7f2e0; --paper-line: #b9c9d6; --paper-ink: #2b3440; --pen: #1c3f94; --pencil: #6d6a63; --red-pencil: #c9302c;
+  --paper-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .13 -.03'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --font-hand: "Gaegu", "Nanum Pen", "Comic Sans MS", cursive;
+  --wood-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='500'%3E%3Cfilter id='w' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .13' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .06 0 0 0 0 .02 0 0 0 1.5 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+  --fine-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+body { background: var(--wood-grain), linear-gradient(180deg, #5a3820, #40280f); background-size: 900px 500px, auto; background-attachment: fixed; }
+.rules, .l-legend, .l-log { color: var(--muted); }
+
+/* Dice tray: solid wood frame with a recessed felt bed */
+.tray {
+  padding: 16px; border: 0; border-radius: 16px;
+  background: var(--wood-grain), linear-gradient(180deg, #a56b38, #7c4b24);
+  background-size: 700px 400px, auto;
+  box-shadow: 0 14px 26px #0009, 0 3px 0 #3a210f, inset 0 2px 1px #e2b98a, inset 0 -3px 3px #0006;
+}
+.felt {
+  background: var(--fine-noise), radial-gradient(120% 100% at 50% 35%, #12777f, #084148);
+  box-shadow: inset 0 0 0 2px #0007, inset 0 8px 16px #000a, inset 0 -2px 6px #0005;
+  border-radius: 6px;
+}
+.die { filter: drop-shadow(3px 7px 4px #000a); }
+.die.held { filter: drop-shadow(0 0 7px var(--signal)) drop-shadow(2px 4px 3px #0008); }
+.die.rolling { transition: transform .62s cubic-bezier(.16, .85, .28, 1); }
+.die.from-cup { transition: none; opacity: .2; transform: translate(calc(var(--i) * -1.33 * var(--d) - .4 * var(--d)), calc(var(--d) * 3)) scale(.4) rotate(120deg); }
+.face { background: linear-gradient(145deg, #fffdf6, #efe8d4); }
+.pip { background: radial-gradient(circle at 35% 30%, #000, #2b3a44 75%); box-shadow: inset 0 2px 2px #000, 0 1px 0 #ffffff99; }
+.pip.ace { background: radial-gradient(circle at 35% 30%, #8d1212, #d9302d 70%); box-shadow: inset 0 2px 3px #5a0808, 0 1px 0 #ffffff99; }
+.column::before { border: 2px solid #0000002e; background: #00000026; box-shadow: inset 0 3px 6px #0006; border-radius: 10px; }
+.rack-line { color: var(--on-felt-muted); }
+
+/* Leather dice cup */
+.cup { width: 56px; height: 62px; flex: none; transform-origin: 50% 90%; filter: drop-shadow(2px 6px 4px #0009); }
+.cup.shake { animation: cup-shake .62s ease-in-out; }
+@keyframes cup-shake {
+  0%, 100% { transform: rotate(0); }
+  12% { transform: translateY(-10px) rotate(-14deg); }
+  26% { transform: translateY(-14px) rotate(13deg); }
+  40% { transform: translateY(-10px) rotate(-12deg); }
+  60% { transform: translate(14px, -22px) rotate(62deg); }
+  82% { transform: translate(6px, -6px) rotate(20deg); }
+}
+.roll { background: linear-gradient(180deg, #ffd64a, #f2b100); border-color: #4a2d05; box-shadow: 0 5px 0 #7c5200, 0 8px 10px #0007; color: #2b1b00; }
+.roll:not(:disabled) { animation: none; }
+.roll:active:not(:disabled) { box-shadow: 0 1px 0 #7c5200; }
+.roll:disabled { background: #00000040; color: var(--on-felt-muted); border-color: #0005; box-shadow: none; }
+.vs-p { background: linear-gradient(180deg, #6d4526, #4c2e18); color: #f6e9d3; border: 0; box-shadow: inset 0 1px 0 #a87a50, inset 0 -2px 2px #0006, 0 3px 4px #0006; opacity: .82; border-radius: 10px; }
+.vs-p.on { background: linear-gradient(180deg, #ffe07a, #e7ab14); box-shadow: inset 0 1px 0 #fff3c4, inset 0 -2px 2px #0003, 0 3px 6px #0007; }
+.vs-av { border: 0; box-shadow: 0 0 0 2px #0005; border-radius: 50%; }
+
+/* Score pad */
+.log {
+  position: relative; overflow: visible; border: 0; border-radius: 4px; padding-top: 34px; color: var(--paper-ink);
+  background: var(--paper-noise), linear-gradient(90deg, #f3edd9, var(--paper) 8%);
+  box-shadow: 0 1px 0 #d9d2bd, 0 3px 0 #efe9d6, 0 4px 0 #cfc8b3, 0 6px 0 #ece6d3, 0 18px 24px #0008;
+  transform: rotate(.5deg);
+}
+.log::before {
+  content: "야추 다이스 점수 기록지"; position: absolute; left: 0; right: 0; top: 0; height: 34px;
+  display: grid; place-items: center; font-family: var(--font-display); font-size: .95rem; color: #fbf3e3;
+  background: #1f4c6b; border-radius: 4px 4px 0 0;
+  box-shadow: inset 0 -2px 0 #0003;
+}
+.log::after {
+  content: ""; position: absolute; left: 10px; right: 10px; top: -7px; height: 14px;
+  background: radial-gradient(circle at 7px 7px, #2b1a0d 4px, #c9c9c9 4.5px, #8c8c8c 6px, transparent 6.6px) 0 0 / 26px 14px repeat-x;
+}
+.log table { background: transparent; }
+.log th, .log td { border-color: var(--paper-line); }
+.log td { border-left: 1px solid #d48f8f; }
+.log thead th { color: var(--paper-ink); font-family: var(--font-hand); font-weight: 700; font-size: 1.15rem; background: transparent; }
+.log thead th.name { font-family: var(--font-body); font-size: .78rem; color: #63707d; }
+.log thead th.now { background: #ffe97a99; color: var(--paper-ink); }
+.log .cat b { font-family: var(--font-body); font-weight: 600; font-size: .9rem; color: var(--paper-ink); }
+.log .cat small { color: #64707c; }
+.log .cat svg { color: var(--paper-ink); }
+.log td.now { background: #ffec8a40; }
+.log .cell, .log .cell:disabled { font-family: var(--font-hand); font-weight: 700; font-size: 1.5rem; line-height: 1; color: var(--pen); transform: rotate(-2deg); }
+.log .cell .chip { min-width: 40px; padding: 2px 8px; border: 0; border-radius: 0; box-shadow: none; background: none; color: var(--pencil); font-weight: 400; animation: none; transform: none; }
+.log .cell .chip.zero { color: #a9a69d; font-weight: 400; box-shadow: none; }
+.log .cell .chip.best {
+  color: var(--red-pencil); font-weight: 700; transform: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 34' preserveAspectRatio='none'%3E%3Cpath d='M8 19C5 8 22 3 34 3s23 5 22 15-16 14-30 13S5 24 12 12' fill='none' stroke='%23c9302c' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.log tr.pick:hover th, .log tr.pick:hover td:not(.now) { background: #fff27a66; }
+.log tr.pick:hover td.now { background: #ffe24a80; }
+.log tr.pick:hover .chip:not(.zero) { color: var(--pen); transform: none; }
+.log tr.armed .chip.zero { background: none; color: var(--red-pencil); font-weight: 700; box-shadow: none; }
+@keyframes write-on { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.log td.fresh .cell { animation: write-on .45s ease-out; }
+.log tr.sub th, .log tr.sub td { background: #e8e3cf; }
+.log tr.sub td.now { background: #ece1a4; }
+.log tr.sub .cell, .log tr.sub .cell.got { font-size: 1.05rem; color: var(--pen); }
+.log tr.total th, .log tr.total td { background: transparent; border-top: 3px double var(--paper-ink); }
+.log tr.total b { font-family: var(--font-body); font-weight: 700; font-size: .95rem; color: var(--paper-ink); }
+.log tr.total .cell { font-family: var(--font-hand); font-size: 1.9rem; color: var(--red-pencil); transform: rotate(-3deg); }
+.log { margin-bottom: 16px; }
+.pencil { position: absolute; right: -8px; bottom: -14px; width: 150px; height: 14px; transform: rotate(-14deg); pointer-events: none; filter: drop-shadow(0 4px 3px #0008); z-index: 2; }
+
+/* Life board: printed cardboard */
+.l-boardbox { border: 0; border-radius: 6px; padding: 10px; overflow: auto; background: linear-gradient(135deg, #f8f4e6, #dfd8c2); box-shadow: 0 16px 28px #000a, 0 3px 0 #a9a28c, 0 5px 0 #807a66; }
+#l-board { border-radius: 3px; box-shadow: inset 0 0 0 1px #0004; }
+.b-road { stroke: #5b5146; stroke-width: 50; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.b-road2 { stroke: #8a7d6b; stroke-width: 42; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.tile rect.edge { fill: #00000066; stroke: none; }
+.tile rect:not(.edge) { stroke: #ffffffb0; stroke-width: 2.5; }
+.tile.stopper rect:not(.edge) { stroke: #fff; stroke-width: 4; }
+.tile.here rect:not(.edge) { stroke: #fff06a; stroke-width: 6; }
+.tile.choice rect:not(.edge) { stroke: #fff; }
+.tile text { font-size: 19px; }
+.tile .ic { stroke: #0003; stroke-width: 1.5; }
+.b-sign rect { fill: #8a5a2e; stroke: #3d2412; stroke-width: 2; }
+.b-sign text { font-family: var(--font-ui); font-size: 17px; fill: #fff6df; text-anchor: middle; }
+.b-title { font-family: var(--font-display); font-size: 58px; fill: #fff; stroke: #1b3c28; stroke-width: 7; paint-order: stroke fill; text-anchor: middle; }
+.b-note { font-family: var(--font-ui); font-size: 18px; fill: #23442f; text-anchor: middle; }
+.pawn .body { stroke: #0009; stroke-width: 2; }
+.pawn.active .body { stroke: #fff; stroke-width: 3.5; }
+.pawn .win { fill: #c9e6f5; stroke: #0005; }
+.pawn .wheel { fill: #111; }
+.pawn .peg { stroke: #0009; stroke-width: 1; }
+.pawn .shade { fill: #0006; }
+
+/* Life table: spinner on felt, each player's belongings laid out */
+.l-panel { border: 0; border-radius: 10px; background: var(--fine-noise), radial-gradient(120% 100% at 50% 30%, #1a6a4a, #0d3e2c); box-shadow: 0 14px 24px #0009, inset 0 0 0 2px #0005; color: #f2f7ee; }
+.l-who { color: #ffe07a; }
+.l-msg, .l-age { color: #d5e6da; }
+.l-event {
+  background: var(--paper-noise), var(--paper); color: var(--paper-ink); border: 0; border-radius: 8px;
+  box-shadow: 0 1px 0 #d9d2bd, 0 6px 10px #0007; transform: rotate(-.6deg);
+}
+.l-event .delta.up { color: #127a45; } .l-event .delta.down { color: #c0282a; }
+#l-wheel { filter: drop-shadow(3px 10px 7px #000b); }
+.l-choice { background: var(--paper-noise), var(--paper); color: var(--paper-ink); border: 0; border-radius: 8px; box-shadow: 0 3px 0 #bdb59e, 0 6px 9px #0007; }
+.l-choice small { color: #5e6873; }
+.l-choice:hover:not(:disabled) { background: var(--paper-noise), #fff3a8; transform: translateY(-3px) rotate(-.6deg); box-shadow: 0 6px 0 #bdb59e, 0 10px 12px #0007; }
+.l-bank .btn { background: linear-gradient(180deg, #4b3320, #352214); border: 0; box-shadow: 0 2px 0 #1a0f07; color: #f6ead6; }
+.l-card { background: var(--fine-noise), linear-gradient(180deg, #2f4d39, #1e3628); border: 0; border-radius: 10px; box-shadow: 0 10px 18px #0008, inset 0 0 0 2px #0004; padding: 10px; gap: 8px; color: #f5f2e6; }
+.l-card.now { box-shadow: 0 10px 18px #0008, 0 0 0 3px #ffd64a; border: 0; }
+.l-cash { color: #ffe07a; }
+.l-chip { border: 2px solid #0007; border-radius: 50%; }
+.belong { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; min-height: 58px; }
+.notes { position: relative; height: 54px; flex: none; }
+.note { position: absolute; top: 4px; width: 62px; height: 34px; border-radius: 2px; display: grid; place-items: center; font-family: var(--font-display); font-size: .7rem; color: #0b1f12; box-shadow: 0 1px 3px #000a, inset 0 0 0 2px #ffffff80, inset 0 0 0 4px #0000001c; }
+.note.n0 { background: #d8dfe6; } .note.n1 { background: #cde2a2; } .note.n2 { background: #f3d68c; } .note.n3 { background: #e9a6b4; }
+.tcard { width: 58px; min-height: 54px; padding: 3px; border-radius: 4px; background: #fbf7ea; color: #2b3440; font-size: .64rem; line-height: 1.15; box-shadow: 0 2px 4px #000a; text-align: center; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
+.tcard b { display: block; padding: 1px 0; border-radius: 2px; color: #fff; font-family: var(--font-ui); font-weight: 400; font-size: .66rem; }
+.tcard.job b { background: #7d4bc0; } .tcard.house b { background: #cf2f33; } .tcard.ins b { background: #2a74c9; } .tcard.stock b { background: #1f8f52; } .tcard.debt b { background: #333; }
+.tstack { position: relative; width: 40px; height: 54px; flex: none; }
+.tstack i { position: absolute; left: 0; bottom: 0; width: 38px; height: 50px; border-radius: 4px; background: linear-gradient(135deg, #f6c91f, #d99a0c); box-shadow: 0 1px 2px #0009; }
+.tstack span { position: absolute; left: 1px; bottom: 16px; width: 36px; text-align: center; font-family: var(--font-display); font-size: .95rem; color: #3b2600; z-index: 3; }
+.l-final .l-event { background: var(--paper); transform: none; }
+.l-final th, .l-final td { color: var(--paper-ink); border-color: var(--paper-line); }
+.l-final tr.win td { color: #127a45; }
+
+.box { box-shadow: 6px 8px 0 #1a0e06, 14px 22px 24px #0009; border-color: #1a0e06; }
+.home-head h1 { -webkit-text-stroke: 2px #1a0e06; text-shadow: 0 5px 0 #1a0e06, 0 12px 14px #0009; }
+
+@media (max-width: 860px) {
+  .tray { padding: 9px; }
+  .log { transform: none; }
+  .pencil { display: none; }
+  .cup { width: 42px; height: 46px; }
+  .l-boardbox { max-height: 52vh; padding: 6px; }
+  #l-board { min-width: 760px; }
+  .l-grid { gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cup.shake, .log td.fresh .cell { animation: none; }
+  .die.from-cup { transform: none; opacity: 1; }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
@@ -803,6 +978,7 @@ tr.total .cell { font-size: 1.6rem; color: var(--signal); }
           </div>
         </div>
         <div class="roll-row">
+          <svg class="cup" id="cup" viewBox="0 0 56 62" aria-hidden="true"><path d="M6 6H50L44 58Q28 62 12 58Z" fill="#6e3f1e"/><path d="M6 6H50L48.6 18Q28 22 7.4 18Z" fill="#54300f"/><path d="M12 22 15 56" stroke="#8d5a31" stroke-width="3"/><ellipse cx="28" cy="6" rx="22" ry="5" fill="#2b1608"/><ellipse cx="28" cy="6" rx="22" ry="5" fill="none" stroke="#a87a50" stroke-width="2"/><path d="M26 30l5 6-5 6-5-6z" fill="#d9b47a"/></svg>
           <button class="roll" id="roll" type="button">굴리기</button>
           <div class="left"><div class="pegs" id="pegs" aria-hidden="true"></div><span id="left-text"></span></div>
         </div>
@@ -816,6 +992,7 @@ tr.total .cell { font-size: 1.6rem; color: var(--signal); }
     </section>
 
     <section class="log" aria-label="점수표">
+      <svg class="pencil" viewBox="0 0 150 14" aria-hidden="true"><rect x="22" y="1" width="110" height="12" fill="#f2b705"/><rect x="22" y="5" width="110" height="4" fill="#ffd64a"/><path d="M22 1 2 7 22 13Z" fill="#ecd3ad"/><path d="M8 5.2 2 7 8 8.8Z" fill="#333"/><rect x="132" y="1" width="6" height="12" fill="#b9b9b9"/><rect x="138" y="1" width="11" height="12" rx="3" fill="#e88a9c"/></svg>
       <table>
         <colgroup><col><col class="c-p"><col class="c-p"></colgroup>
         <thead><tr><th class="name" scope="col">족보</th><th scope="col" id="h0"></th><th scope="col" id="h1"></th></tr></thead>
@@ -1529,6 +1706,7 @@ function setMsg(text) { $('msg').textContent = text; }
 function humanMayAct() { return !state.over && !cur().cpu && !busy && (!Net.active || state.turn === Net.seat); }
 
 function poseDice(animateIdx) {
+  if (animateIdx && animateIdx.length && !reduced) { const c = $('cup'); c.classList.remove('shake'); void c.getBoundingClientRect(); c.classList.add('shake'); }
   dieEls.forEach((el, i) => {
     const v = state.dice[i], [tx, ty] = TARGET[v];
     const spin = animateIdx && animateIdx.includes(i);
@@ -1539,6 +1717,8 @@ function poseDice(animateIdx) {
     r.y = Math.ceil(r.y / 360) * 360 + (spin ? 360 * (1 + (Math.random()*2|0)) : 0) + ty;
     el.querySelector('.cube').style.transform = `rotateX(${r.x}deg) rotateY(${r.y}deg)`;
     if (spin) {
+      el.style.setProperty('--i', i);
+      if (!reduced) { el.classList.add('from-cup'); void el.offsetWidth; el.classList.remove('from-cup'); }
       el.style.setProperty('--sx', ((Math.random()-.5) * .22).toFixed(3));
       el.style.setProperty('--sy', (Math.random() * .75).toFixed(3));
       el.style.setProperty('--rz', ((Math.random()-.5) * 44).toFixed(1) + 'deg');
@@ -2013,24 +2193,93 @@ const Life = (function () {
 
   const STOPS = ['marry', 'job', 'house', 'retire'];
   const tileClass = n => ({ pay:'t-pay', act:'t-act', opt:'t-opt', life:'t-life', career:'t-job', ins:'t-act', baby:'t-baby', rest:'t-rest', fired:'t-act', night:'t-opt', zoom:'t-act', slump:'t-act', lotto:'t-opt', marry:'t-stop', job:'t-stop', house:'t-stop', retire:'t-stop' }[n.t]);
-  const CELL = 100;
-  const centre = id => [BOARD[id].c * CELL + CELL / 2, BOARD[id].r * CELL + CELL / 2];
+  const BW = 1400, BH = 1240, PITCH_X = 96, PITCH_Y = 136;
+  const centre = id => {
+    const n = BOARD[id];
+    return [76 + n.c * PITCH_X, 78 + n.r * PITCH_Y + Math.sin(n.c * .85 + n.r * 2.1) * 15];
+  };
+  const tileAngle = n => Math.atan(Math.cos(n.c * .85 + n.r * 2.1) * 15 * .85 / PITCH_X) * 180 / Math.PI;
+
+  /* ----- Printed scenery ----- */
+  function seeded(seed) { return () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296; }
+  const tree = (x, y, s = 1, c = '#2f7f48') => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="3" cy="2" rx="13" ry="4" fill="#0003"/><rect x="-2.5" y="-12" width="5" height="13" fill="#6d4526"/><circle cy="-22" r="14" fill="${c}"/><circle cx="-7" cy="-16" r="9" fill="${c}"/><circle cx="7" cy="-16" r="9" fill="${c}"/><circle cx="-4" cy="-26" r="5" fill="#ffffff2e"/></g>`;
+  const pine = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="2" cy="1" rx="10" ry="3" fill="#0003"/><rect x="-2" y="-8" width="4" height="9" fill="#6d4526"/><path d="M0-34 13-8H-13Z" fill="#1f6b43"/><path d="M0-42 10-20H-10Z" fill="#2a8253"/></g>`;
+  const house = (x, y, wall = '#f6ead4', roof = '#c6402f', s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="2" cy="1" rx="24" ry="4" fill="#0003"/><rect x="-18" y="-22" width="36" height="23" fill="${wall}" stroke="#0004"/><path d="M-23-21 0-40 23-21Z" fill="${roof}" stroke="#0005"/><rect x="-5" y="-12" width="10" height="13" fill="#7a4a24"/><rect x="-15" y="-16" width="7" height="7" fill="#8fc7e8"/><rect x="8" y="-16" width="7" height="7" fill="#8fc7e8"/></g>`;
+  const tower = (x, y, h = 46, c = '#7c8ea3') => { let w = ''; for (let r = 0; r < Math.floor((h - 6) / 9); r++) for (let k = 0; k < 3; k++) w += `<rect x="${-11 + k * 8}" y="${-h + 4 + r * 9}" width="5" height="5" fill="#e9f2f8"/>`; return `<g transform="translate(${x} ${y})"><ellipse cx="2" cy="1" rx="18" ry="3" fill="#0003"/><rect x="-14" y="${-h}" width="28" height="${h}" fill="${c}" stroke="#0005"/>${w}</g>`; };
+  const church = (x, y) => `<g transform="translate(${x} ${y})"><ellipse cx="2" cy="1" rx="26" ry="4" fill="#0003"/><rect x="-22" y="-24" width="44" height="25" fill="#fbf5e8" stroke="#0004"/><path d="M-26-23 0-36 26-23Z" fill="#7a4fa6"/><rect x="-7" y="-50" width="14" height="28" fill="#fbf5e8" stroke="#0004"/><path d="M-10-49 0-62 10-49Z" fill="#7a4fa6"/><path d="M0-72V-60M-4-68H4" stroke="#caa33c" stroke-width="2"/><path d="M-5 1V-11Q0-17 5-11V1Z" fill="#8a5a2e"/></g>`;
+  const school = (x, y) => `<g transform="translate(${x} ${y})"><ellipse cx="2" cy="1" rx="66" ry="6" fill="#0003"/><rect x="-60" y="-40" width="120" height="41" fill="#c9694a" stroke="#0005"/>${[...Array(8)].map((_, i) => `<rect x="${-54 + i * 14}" y="-34" width="9" height="11" fill="#e7f3fb"/><rect x="${-54 + i * 14}" y="-18" width="9" height="11" fill="#e7f3fb"/>`).join('')}<path d="M-20-40 0-66 20-40Z" fill="#7d3f2b"/><circle cy="-48" r="5.5" fill="#fff" stroke="#0005"/><rect x="-7" y="-13" width="14" height="14" fill="#5d341d"/></g>`;
+  const mountain = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-46 0-6-48 22-18 34-30 60 0Z" fill="#7f8a84"/><path d="M-6-48-17-34-8-37-3-30 5-38 11-30Z" fill="#fff"/></g>`;
+  const cow = (x, y) => `<g transform="translate(${x} ${y})"><rect x="-10" y="-11" width="20" height="10" rx="3" fill="#fff" stroke="#0005"/><circle cx="-3" cy="-7" r="2.6" fill="#222"/><circle cx="4" cy="-5" r="2.2" fill="#222"/><rect x="10" y="-14" width="7" height="7" rx="2" fill="#fff" stroke="#0005"/><path d="M-8-1V3M-3-1V3M3-1V3M8-1V3" stroke="#333" stroke-width="1.6"/></g>`;
+  const palm = (x, y) => `<g transform="translate(${x} ${y})"><path d="M-2 0Q-4-16 2-34" stroke="#7a5230" stroke-width="4.5" fill="none"/><path d="M2-34Q-14-42-24-30M2-34Q-8-48-20-48M2-34Q12-48 26-44M2-34Q18-36 26-24" stroke="#1f8a4e" stroke-width="6" fill="none" stroke-linecap="round"/></g>`;
+  const sign = (x, y, text) => { const w = Math.max(84, text.length * 19 + 22); return `<g class="b-sign" transform="translate(${x} ${y})"><rect x="-3" y="4" width="6" height="26" fill="#6b4323" stroke="none"/><rect x="${-w / 2}" y="-16" width="${w}" height="26" rx="4"/><text y="3">${text}</text></g>`; };
+
+  function drawScenery() {
+    const rnd = seeded(42);
+    let s = `<defs>
+      <linearGradient id="bg-land" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#9fd8a0"/><stop offset=".22" stop-color="#8ccf8f"/><stop offset=".45" stop-color="#7fc989"/>
+        <stop offset=".6" stop-color="#b6c98a"/><stop offset=".72" stop-color="#c5b784"/><stop offset=".86" stop-color="#a7d392"/><stop offset=".94" stop-color="#ecdca4"/><stop offset="1" stop-color="#f2e3ae"/>
+      </linearGradient></defs>
+      <rect width="${BW}" height="${BH}" fill="url(#bg-land)"/>`;
+    s += `<path d="M0 ${BH - 36}Q180 ${BH - 62} 420 ${BH - 40}T880 ${BH - 42}T${BW} ${BH - 56}V${BH}H0Z" fill="#4eb3d6"/><path d="M0 ${BH - 22}Q200 ${BH - 40} 460 ${BH - 24}T${BW} ${BH - 34}" stroke="#d9f3fb" stroke-width="3" fill="none"/>`;
+    s += `<circle cx="1330" cy="62" r="30" fill="#ffe27a"/><g fill="#ffffffd9"><ellipse cx="1110" cy="48" rx="46" ry="15"/><ellipse cx="1145" cy="38" rx="28" ry="15"/></g>`;
+    s += `<text class="b-title" x="1170" y="118">인생게임</text>`;
+    const gap = r => 78 + r * PITCH_Y + 76;
+    for (let i = 0; i < 12; i++) s += tree(1000 + rnd() * 320, 180 + rnd() * 16, .7 + rnd() * .35);
+    s += school(600, gap(0) + 6);
+    const themes = [
+      (x, y) => (rnd() < .6 ? tree : pine)(x, y, .75 + rnd() * .3),
+      (x, y) => rnd() < .55 ? house(x, y, ['#f6ead4', '#d9ecf2', '#f4d9c8'][Math.floor(rnd() * 3)], ['#c6402f', '#3f6ea6', '#7b5a3a'][Math.floor(rnd() * 3)], .85) : tree(x, y, .8),
+      (x, y) => rnd() < .5 ? tree(x, y, .8, '#d78aa6') : tree(x, y, .8),
+      (x, y) => rnd() < .55 ? tower(x, y, 34 + rnd() * 18, ['#7c8ea3', '#94a0ad', '#6f8796'][Math.floor(rnd() * 3)]) : tree(x, y, .7),
+      (x, y) => rnd() < .6 ? house(x, y, '#f6ead4', ['#c6402f', '#3f6ea6'][Math.floor(rnd() * 2)], .9) : pine(x, y, .9),
+      (x, y) => rnd() < .35 ? mountain(x, y + 2, .55 + rnd() * .2) : pine(x, y, .85),
+      (x, y) => rnd() < .3 ? cow(x, y) : tree(x, y, .75),
+      (x, y) => rnd() < .55 ? palm(x, y) : pine(x, y, .7),
+    ];
+    for (let r = 1; r <= 7; r++) {
+      for (let x = 240; x < 1290; x += 74 + rnd() * 40) {
+        if (r === 2 && Math.abs(x - 700) < 60) continue;
+        s += themes[r](x, gap(r) + (rnd() - .5) * 8);
+      }
+    }
+    s += church(700, gap(2) + 6);
+    return s;
+  }
 
   /* ----- Static drawing ----- */
   function drawBoard() {
     let roads = '', tiles = '';
     BOARD.forEach(n => {
       const [x, y] = centre(n.id);
-      n.next.forEach(m => { const [a, b] = centre(m); roads += `<line class="road" x1="${x}" y1="${y}" x2="${a}" y2="${b}"/>`; });
+      n.next.forEach(m => { const [a, b] = centre(m); roads += `M${x} ${y}L${a} ${b}`; });
       const sub = n.t === 'act' || n.t === 'ins' || n.t === 'career' ? shortAmt(n.amt) : n.t === 'opt' ? shortAmt(-n.cost) : '';
       const words = n.s.split(' ');
       const lines = n.s.length > 4 && words.length > 1 ? words : [n.s];
+      const stopper = STOPS.includes(n.t);
+      let icon = '';
+      if (!sub && lines.length === 1) {
+        if (n.t === 'pay') icon = `<circle class="ic" cy="-13" r="10" fill="#ffd64a"/><text y="-8" style="font-size:13px;fill:#7a5200">₩</text>`;
+        else if (n.t === 'life') icon = `<path class="ic" d="M0-24 3-16 11-16 5-11 7-3 0-8-7-3-5-11-11-16-3-16Z" fill="#fff"/>`;
+        else if (n.t === 'baby') icon = `<circle class="ic" cy="-16" r="7" fill="#fff"/><path class="ic" d="M-6-3Q0-12 6-3Z" fill="#fff"/>`;
+        else if (n.t === 'marry') icon = `<circle cx="-5" cy="-14" r="7" fill="none" stroke="#ffe07a" stroke-width="3"/><circle cx="5" cy="-14" r="7" fill="none" stroke="#ffe07a" stroke-width="3"/>`;
+        else if (n.t === 'job') icon = `<rect class="ic" x="-10" y="-19" width="20" height="14" rx="2" fill="#fff"/><path d="M-4-19v-3h8v3" stroke="#fff" stroke-width="2" fill="none"/>`;
+        else if (n.t === 'retire') icon = `<path class="ic" d="M0-24 12-13H8V-3H-8V-13H-12Z" fill="#ffe07a"/>`;
+      }
       const all = sub ? [...lines, sub] : lines;
-      const y0 = y - (all.length - 1) * 11 + 6;
-      const texts = all.map((t, i) => `<text x="${x}" y="${y0 + i * 22}"${sub && i === all.length - 1 ? ' class="amt"' : ''}>${esc(t)}</text>`).join('');
-      tiles += `<g class="tile ${tileClass(n)}" id="tile${n.id}"><title>${esc(n.txt || n.s)}</title><rect class="edge" x="${x - 45}" y="${y - 39}" width="90" height="90" rx="14"/><rect x="${x - 45}" y="${y - 45}" width="90" height="90" rx="14"/>${texts}</g>`;
+      const y0 = icon ? 15 : 6 - (all.length - 1) * 10.5;
+      const texts = all.map((t, i) => {
+        const amt = sub && i === all.length - 1;
+        const size = Math.min(amt ? 15.5 : 19, 80 / Math.max(1, [...t].length * (amt ? .62 : 1)));
+        return `<text y="${y0 + i * 21}"${amt ? ' class="amt"' : ''} style="font-size:${size.toFixed(1)}px">${esc(t)}</text>`;
+      }).join('');
+      const W = stopper ? 92 : 84, H = stopper ? 82 : 72;
+      tiles += `<g class="tile ${tileClass(n)}${stopper ? ' stopper' : ''}" id="tile${n.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${tileAngle(n).toFixed(1)})"><title>${esc(n.txt || n.s)}</title><rect class="edge" x="${-W / 2}" y="${-H / 2 + 6}" width="${W}" height="${H}" rx="12"/><rect x="${-W / 2}" y="${-H / 2}" width="${W}" height="${H}" rx="12"/>${icon}${texts}</g>`;
     });
-    q('l-board').innerHTML = roads + tiles + '<g id="l-pawns"></g>';
+    const signs = [[1, 0, '▲ 대학 진학', 150], [1, 1, '▼ 바로 취업', 150], [1, 3, '가족의 길', 150], [1, 4, '커리어의 길', 165], [1, 6, '모험의 길', 150], [1, 7, '안전한 길', 150]]
+      .map(([c, r, t, x]) => sign(x, 78 + r * PITCH_Y - 54 + (r === 0 ? 112 : 0), t)).join('');
+    q('l-board').setAttribute('viewBox', `0 0 ${BW} ${BH}`);
+    q('l-board').innerHTML = drawScenery() + `<path class="b-road" d="${roads}"/><path class="b-road2" d="${roads}"/>` + tiles + signs + '<g id="l-pawns"></g>';
   }
   function drawWheel() {
     const seg = ['--t-stop','--t-life','--t-pay','--t-act','--t-opt','--t-baby','--t-job','--t-life','--t-pay','--t-act'];
@@ -2118,38 +2367,49 @@ const Life = (function () {
       g.style.transform = `translate(${x + dx[i]}px, ${y + dy[i]}px)`;
       g.classList.toggle('active', !S.over && S.turn === i);
       let pegs = '';
-      for (let k = 0; k < Math.min(p.family, 6); k++) pegs += `<circle class="peg" cx="${-11 + (k % 3) * 11}" cy="${k < 3 ? -4 : 6}" r="4"/>`;
-      g.innerHTML = `<rect class="body" x="-20" y="-13" width="40" height="27" rx="8" fill="${p.color}"/>${p.family > 3 ? '' : `<rect class="win" x="8" y="-9" width="8" height="19" rx="3"/>`}${pegs}`;
+      for (let k = 0; k < Math.min(p.family, 6); k++) {
+        const col = k === 0 ? '#ffffff' : k % 2 ? '#f39ac0' : '#8fc7ff';
+        pegs += `<circle class="peg" cx="${-13 + Math.floor(k / 2) * 10}" cy="${k % 2 ? 4.5 : -4.5}" r="3.8" fill="${col}"/>`;
+      }
+      g.innerHTML = `<ellipse class="shade" cx="2" cy="16" rx="24" ry="5"/><rect class="wheel" x="-17" y="-16" width="9" height="4" rx="1"/><rect class="wheel" x="9" y="-16" width="9" height="4" rx="1"/><rect class="wheel" x="-17" y="12" width="9" height="4" rx="1"/><rect class="wheel" x="9" y="12" width="9" height="4" rx="1"/><rect class="body" x="-23" y="-13" width="46" height="26" rx="9" fill="${p.color}"/><rect class="win" x="12" y="-9" width="6" height="18" rx="2"/><rect x="-18" y="-10" width="28" height="20" rx="4" fill="#00000040"/>${pegs}`;
     });
     for (let i = S.players.length; i < 4; i++) q('pawn' + i)?.remove();
   }
   function followPawn(p, smooth = true) {
     const box = q('l-boardbox');
-    if (box.scrollWidth <= box.clientWidth) return;
-    const scale = box.scrollWidth / 1400;
-    box.scrollTo({ left: centre(p.at)[0] * scale - box.clientWidth / 2, behavior: smooth && !reduced ? 'smooth' : 'auto' });
+    if (box.scrollWidth <= box.clientWidth && box.scrollHeight <= box.clientHeight) return;
+    const scale = box.scrollWidth / BW, [cx, cy] = centre(p.at);
+    box.scrollTo({ left: cx * scale - box.clientWidth / 2, top: cy * scale - box.clientHeight / 2, behavior: smooth && !reduced ? 'smooth' : 'auto' });
+  }
+  function renderNotes(cash) {
+    let left = Math.max(0, cash), html = '', x = 0, count = 0;
+    const kinds = [[10000, 'n3', '1억'], [5000, 'n2', '5천만'], [1000, 'n1', '1천만'], [100, 'n0', '1백만']];
+    const list = [];
+    for (const [v, c, label] of kinds) { while (left >= v && list.length < 7) { list.push([c, label]); left -= v; } }
+    list.forEach(([c, label], i) => { html += `<span class="note ${c}" style="left:${i * 11}px;top:${4 + (i % 2) * 7}px;transform:rotate(${-5 + (i * 3) % 9}deg)">${label}</span>`; count = i; });
+    return `<div class="notes" style="width:${list.length ? 70 + count * 11 : 0}px" aria-hidden="true">${html}</div>`;
   }
   function renderPlayers() {
     q('l-players').innerHTML = S.players.map((p, i) => {
-      const tags = [];
-      if (p.job) tags.push(`${JOBS[p.job].n} · 월급 ${fmt(p.sal)}`);
-      else if (p.retired) tags.push(p.place === 'rich' ? '은퇴 · 부촌' : p.place === 'country' ? '은퇴 · 전원마을' : '은퇴');
-      else if (p.path === 'college') tags.push('대학생');
-      else tags.push('출발 전');
-      if (p.house) tags.push(p.house.n);
-      if (p.carIns) tags.push('자동차 보험');
-      if (p.homeIns) tags.push('주택 보험');
-      p.stocks.forEach(n => tags.push(`주식 ${n}번`));
-      tags.push(`인생 카드 ${p.tiles.length}장`);
-      tags.push(`가족 ${p.family}명`);
+      const cards = [];
+      if (p.job) cards.push(`<div class="tcard job"><b>직업</b>${esc(JOBS[p.job].n)}<br>${esc(compact(p.sal))}</div>`);
+      else if (p.path === 'college' && !p.retired) cards.push(`<div class="tcard job"><b>대학생</b>학생증</div>`);
+      if (p.house) cards.push(`<div class="tcard house"><b>집문서</b>${esc(p.house.n)}</div>`);
+      if (p.carIns) cards.push(`<div class="tcard ins"><b>보험</b>자동차</div>`);
+      if (p.homeIns) cards.push(`<div class="tcard ins"><b>보험</b>주택</div>`);
+      p.stocks.forEach(n => cards.push(`<div class="tcard stock"><b>주식</b>${n}번</div>`));
+      if (p.loans) cards.push(`<div class="tcard debt"><b>어음</b>${p.loans}건</div>`);
+      const n = Math.min(p.tiles.length, 5);
+      const stack = `<div class="tstack" aria-label="인생 카드 ${p.tiles.length}장" title="인생 카드">${Array.from({ length: n || 0 }, (_, k) => `<i style="transform:translate(${k * .8}px,${-k * 2}px)"></i>`).join('')}${p.tiles.length ? `<span>${p.tiles.length}</span>` : ''}</div>`;
       const me = Net.active && Net.seat === i ? ' (나)' : '';
-      return `<article class="l-card${!S.over && S.turn === i ? ' now' : ''}"><header><span class="l-chip" style="background:${p.color}"></span><h3>${esc(p.name + me)}</h3><span class="l-cash">${fmt(p.cash)}</span></header><div class="l-tags">${tags.map(t => `<span class="l-tag">${esc(t)}</span>`).join('')}${p.loans ? `<span class="l-tag debt">대출 ${p.loans}건</span>` : ''}</div></article>`;
+      const place = p.retired ? (p.place === 'rich' ? ' · 부촌' : p.place === 'country' ? ' · 전원마을' : ' · 은퇴') : '';
+      return `<article class="l-card${!S.over && S.turn === i ? ' now' : ''}"><header><span class="l-chip" style="background:${p.color}"></span><h3>${esc(p.name + me + place)}</h3><span class="l-cash">${fmt(p.cash)}</span></header><div class="belong">${renderNotes(p.cash)}${cards.join('')}${stack}</div><div class="l-line">가족 ${p.family}명</div></article>`;
     }).join('');
   }
   function renderEvent() {
     const box = q('l-event');
     box.style.display = '';
-    if (!U.event) { box.innerHTML = '<span style="color:var(--muted)">아직 일어난 일이 없습니다.</span>'; return; }
+    if (!U.event) { box.innerHTML = '<span style="color:#6b6b60">아직 일어난 일이 없습니다.</span>'; return; }
     const [title, text, delta] = U.event;
     box.innerHTML = `<span><b>${esc(title)}</b> ${esc(text || '')}</span>${delta ? `<span class="delta ${delta > 0 ? 'up' : 'down'}">${esc(signed(delta))}</span>` : ''}`;
   }
